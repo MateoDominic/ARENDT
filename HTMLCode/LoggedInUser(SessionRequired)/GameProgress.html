@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      .container-center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 70vh;
+        position: relative;
+      }
+
+      .answer-panel {
+        height: 150px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-bottom: 15px;
+      }
+
+      .timer {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 2rem;
+      }
+
+      .btn-next {
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+      }
+
+      .overlay-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 1); /* Opaque background */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        color: white;
+        font-size: 2rem;
+      }
+
+      @media (max-width: 767.98px) {
+        .answer-panel {
+          height: 100px;
+          font-size: 1.2rem;
+        }
+
+        .timer {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+
+    <title>Kahoot</title>
+  </head>
+  <body>
+    
+    <h1 class="mb-4 container text-center mt-5">What is the capital of France?</h1>
+
+    <div class="container container-center text-center">
+      <div class="timer pt-5 mt-5 ml-5" id="timer">3</div>
+      
+      <div class="row w-100">
+        <div class="col-md-6">
+          <div class="answer-panel bg-danger">Answer 1</div>
+        </div>
+        <div class="col-md-6">
+          <div class="answer-panel bg-primary">Answer 2</div>
+        </div>
+        <div class="col-md-6">
+          <div class="answer-panel bg-warning">Answer 3</div>
+        </div>
+        <div class="col-md-6">
+          <div class="answer-panel bg-success">Answer 4</div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-next">Next</button>
+      
+      
+    </div>
+
+    <div class="overlay-panel" id="overlay" style="display: none;">
+        <p>1st player: 1500 points</p>
+        <p>2nd player: 1000 points</p>
+        <p>3rd player: 500 points</p>
+        <p>4th player: 250 points</p>
+        <p>5th player: 100 points</p>
+        <!-- myb change button here or whatever -->
+        <button class="btn btn-primary btn-next">Next</button> 
+      </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      // Timer functionality
+      var timeLeft = 2; // Reduced for testing purpose
+      var timerElement = document.getElementById('timer');
+      var overlayElement = document.getElementById('overlay');
+
+      var timerInterval = setInterval(function() {
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerElement.innerHTML = "Time's up!";
+          overlayElement.style.display = 'flex'; // Display the overlay
+        } else {
+          timerElement.innerHTML = timeLeft;
+        }
+        timeLeft -= 1;
+      }, 1000);
+    </script>
+  </body>
+</html>
