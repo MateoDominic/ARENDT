@@ -14,5 +14,8 @@ namespace WebApi.DTOs
 
         [Required(ErrorMessage = "A question needs answers")]
         public IEnumerable<AnswerDTO> Answers { get; set; }
+
+        [Required(ErrorMessage = "A question needs a position answers")]
+        public int QuestionPosition { get; set; }
     }
 }

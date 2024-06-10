@@ -13,6 +13,8 @@ public partial class Question
 
     public int QuizId { get; set; }
 
+    public int QuestionPosition { get; set; }
+
     public virtual ICollection<Answer> Answers { get; } = new List<Answer>();
 
     public virtual Picture? Picture { get; set; }

@@ -10,6 +10,7 @@ namespace WebApi.Utilities
         public FullQuizDTO AddFullQuiz(FullQuizDTO fullQuizDTO);
         
         public FullQuizDTO UpdateFullQuiz(FullQuizDTO fullQuizDTO);
+        public QuestionDTO GetQuizQuestion(int quizId, int questionNumber);
     }
 
     public class DbServices : IDbService
@@ -34,6 +35,17 @@ namespace WebApi.Utilities
             _praContext.Quizzes.Update(_mapper.Map<Quiz>(fullQuizDTO));
             _praContext.SaveChanges();
             return fullQuizDTO;
+        }
+
+        public QuestionDTO GetQuizQuestion(int quizId, int questionNumber) {
+            Console.WriteLine("NES PLZ2");
+            Quiz? quiz = _praContext.Quizzes.Include("Questions").Include("Questions.Answers").FirstOrDefault(x => x.Id == quizId);
+            if (quiz == null)
+            {
+                Console.WriteLine("OVO JE NULL");
+            }
+            List<Question> questions = quiz.Questions.OrderBy(x => x.QuestionPosition).ToList();
+            return _mapper.Map<QuestionDTO>(questions.ElementAt(questionNumber-1));
         }
     }
 }

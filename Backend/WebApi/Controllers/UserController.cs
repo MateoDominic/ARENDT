@@ -119,7 +119,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("changePassword")]
         public ActionResult<UserChangePasswordDTO> Put([FromBody] UserChangePasswordDTO value)
         {
             try

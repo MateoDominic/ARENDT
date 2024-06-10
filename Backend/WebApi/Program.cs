@@ -1,3 +1,4 @@
+using Fleck;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,9 +66,11 @@ builder.Services
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IDbService, DbServices>();
+builder.Services.AddScoped<IConnectionHandler, ConnectionHandler>();
+
 
 builder.Services.AddDbContext<PraContext>(options => {
-    options.UseSqlServer("name=ConnectionStrings:RWAcs");
+    options.UseSqlServer("name=ConnectionStrings:PRAcs");
 });
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -75,7 +78,6 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -93,6 +95,36 @@ app.UseWebSockets(webSocketOptions);
 
 app.MapControllers();
 
+var serviceScope = app.Services.CreateScope();
+var services = serviceScope.ServiceProvider;
+IConnectionHandler connectionHandler = services.GetRequiredService<IConnectionHandler>();
 
+var websocketServer = new WebSocketServer("ws://0.0.0.0:8181");
+websocketServer.Start(connection =>
+{
+    connection.OnOpen = () =>
+    {
+        Console.WriteLine("OnOpen");
+        Console.WriteLine(connection.ConnectionInfo.Id);
+        connection.ConnectionInfo.Headers.TryGetValue("SessionCode", out string sessionCode);
+        Console.WriteLine(sessionCode);
+        connectionHandler.HandleConnection(connection);
+    };
+    connection.OnClose = () =>
+      connectionHandler.HandleClose(connection);
+    connection.OnMessage = message =>
+    {
+        Console.WriteLine($"OnMessage {message}");
+        connectionHandler.HandleMessage(connection, message);
+    };
+    connection.OnBinary = bytes =>
+      Console.WriteLine($"OnBinary {Encoding.UTF8.GetString(bytes)}");
+    connection.OnError = exception =>
+      Console.WriteLine($"OnError {exception.Message}");
+    connection.OnPing = bytes =>
+      Console.WriteLine("OnPing");
+    connection.OnPong = bytes =>
+      Console.WriteLine("OnPong");
+});
 
 app.Run();

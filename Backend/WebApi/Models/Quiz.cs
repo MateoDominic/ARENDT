@@ -19,5 +19,4 @@ public partial class Quiz
 
     public virtual ICollection<QuizHistory> QuizHistories { get; } = new List<QuizHistory>();
 
-    public virtual ICollection<SessionCode> SessionCodes { get; } = new List<SessionCode>();
 }
