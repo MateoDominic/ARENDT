@@ -15,6 +15,10 @@ public partial class Question
 
     public int QuestionPosition { get; set; }
 
+    public int QuestionTime { get; set; }
+
+    public int QuestionMaxPoints { get; set; }
+
     public virtual ICollection<Answer> Answers { get; } = new List<Answer>();
 
     public virtual Picture? Picture { get; set; }

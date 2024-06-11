@@ -27,7 +27,9 @@ CREATE TABLE Questions(
 	QuestionText nvarchar(max) not null,
 	PictureID int foreign key references Pictures(ID),
 	QuizID int foreign key references Quizzes(ID) not null,
-	QuestionPosition int not null
+	QuestionPosition int not null,
+	QuestionTime int not null default 30,
+	QuestionMaxPoints int not null
 );
 
 CREATE TABLE Answers(
@@ -43,4 +45,5 @@ CREATE TABLE QuizHistory(
 	WinnerID int foreign key references Users(ID),
 	PlayedAt datetime not null,
 	WinnerName nvarchar(75) not null,
+	WinnerScore int not null
 );

@@ -9,7 +9,7 @@ namespace WebApi.Utilities
     public interface IDbService {
         public FullQuizDTO AddFullQuiz(FullQuizDTO fullQuizDTO);
         public FullQuizDTO? UpdateFullQuiz(FullQuizDTO fullQuizDTO);
-        public QuestionDTO GetQuizQuestion(int quizId, int questionNumber);
+        public QuestionDTO? GetQuizQuestion(int quizId, int questionNumber);
         public IEnumerable<QuizDTO> GetAllQuizzes();
         public IEnumerable<QuizDTO> GetQuizzesByAuthorId(int AuthorId);
         public FullQuizDTO? GetQuizById(int QuizId);
@@ -27,9 +27,11 @@ namespace WebApi.Utilities
 
         public FullQuizDTO AddFullQuiz(FullQuizDTO fullQuizDTO)
         {
-            _praContext.Quizzes.Add(_mapper.Map<Quiz>(fullQuizDTO));
+            var fullQuiz = _mapper.Map<Quiz>(fullQuizDTO);
+            _praContext.Quizzes.Add(fullQuiz);
             _praContext.SaveChanges();
-            
+
+            fullQuizDTO.QuizId = fullQuiz.Id;
             return fullQuizDTO;
         }
 
@@ -45,12 +47,11 @@ namespace WebApi.Utilities
             return fullQuizDTO;
         }
 
-        public QuestionDTO GetQuizQuestion(int quizId, int questionNumber) {
-            Console.WriteLine("NES PLZ2");
+        public QuestionDTO? GetQuizQuestion(int quizId, int questionNumber) {
             Quiz? quiz = _praContext.Quizzes.Include("Questions").Include("Questions.Answers").FirstOrDefault(x => x.Id == quizId);
             if (quiz == null)
             {
-                Console.WriteLine("OVO JE NULL");
+                return null;
             }
             List<Question> questions = quiz.Questions.OrderBy(x => x.QuestionPosition).ToList();
             return _mapper.Map<QuestionDTO>(questions.ElementAt(questionNumber-1));
@@ -74,7 +75,7 @@ namespace WebApi.Utilities
         }
 
         public FullQuizDTO? GetQuizById(int QuizId) {
-            Quiz quiz = _praContext.Quizzes.Include("Questions").Include("Questions.Answers").FirstOrDefault(x => x.Id == QuizId);
+            Quiz? quiz = _praContext.Quizzes.Include("Questions").Include("Questions.Answers").FirstOrDefault(x => x.Id == QuizId);
 
             if (quiz == null)
             {

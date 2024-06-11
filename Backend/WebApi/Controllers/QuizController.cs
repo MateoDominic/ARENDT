@@ -77,6 +77,25 @@ namespace WebApi.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                if (quizDto.Questions.Count() > 20 || quizDto.Questions.Count() < 1)
+                {
+                    return BadRequest("Incorrect number of questions. A quiz has to have at least 1 and more that 20 questions.");
+                }
+                foreach (var question in quizDto.Questions)
+                {
+                    if (question.Answers.Count() != 4)
+                    {
+                        return BadRequest($"Every question has to have 4 answers. The question in position {question.QuestionPosition} does not.");
+                    }
+                    if (question.QuestionTime < 15 || question.QuestionTime>60)
+                    {
+                        return BadRequest($"Every question has to last from 15 to 60 seconds. The question in position {question.QuestionPosition} lasts {question.QuestionTime} seconds.");
+                    }
+                    if (question.Answers.Count(x => x.Correct) != 1)
+                    {
+                        return BadRequest($"Question {question.QuestionPosition} has to have 1 correct answer");
+                    }
+                }
 
                 var postedQuiz = _dbService.AddFullQuiz(quizDto);
 
@@ -97,6 +116,25 @@ namespace WebApi.Controllers
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
+                }
+                if (quizDto.Questions.Count() > 20 || quizDto.Questions.Count() < 1)
+                {
+                    return BadRequest("Incorrect number of questions. A quiz has to have at least 1 and more that 20 questions.");
+                }
+                foreach (var question in quizDto.Questions)
+                {
+                    if (question.Answers.Count() != 4)
+                    {
+                        return BadRequest($"Every question has to have 4 answers. The question in position {question.QuestionPosition} does not.");
+                    }
+                    if (question.QuestionTime < 15 || question.QuestionTime > 60)
+                    {
+                        return BadRequest($"Every question has to last from 15 to 60 seconds. The question in position {question.QuestionPosition} lasts {question.QuestionTime} seconds.");
+                    }
+                    if (question.Answers.Count(x => x.Correct) != 1)
+                    {
+                        return BadRequest($"Question {question.QuestionPosition} has to have 1 correct answer");
+                    }
                 }
 
                 var updatedQuiz = _dbService.UpdateFullQuiz(quizDto);

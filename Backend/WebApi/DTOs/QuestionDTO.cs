@@ -17,5 +17,12 @@ namespace WebApi.DTOs
 
         [Required(ErrorMessage = "A question needs a position answers")]
         public int QuestionPosition { get; set; }
+
+        [Required(ErrorMessage = "A question needs a specified time")]
+        public int QuestionTime { get; set; }
+
+        [Required(ErrorMessage = "A question needs a maximmum amount of points")]
+        public int QuestionMaxPoints { get; set; }
+
     }
 }

@@ -78,13 +78,22 @@ namespace WebApi.Controllers
             {
                 var user = _praContext.Users.FirstOrDefault(x => x.Username == value.Username);
 
-                string v = AuthUtilities.GetStringSha256Hash(value.Password, user.PasswordSalt);
-                if (user == null || v != user.PasswordHash)
+                if (user == null)
                 {
                     return BadRequest("Bad username or password");
                 }
-                var secureKey = _configuration["JWT:SecureKey"];
+                string v = AuthUtilities.GetStringSha256Hash(value.Password, user.PasswordSalt);
+                
+                if (v != user.PasswordHash)
+                {
+                    return BadRequest("Bad username or password");
+                }
 
+                var secureKey = _configuration["JWT:SecureKey"];
+                if (secureKey == null)
+                {
+                    return StatusCode(500);
+                }
                 var serializedToken =
                     JwtTokenProvider.CreateToken(
                         secureKey,
@@ -156,7 +165,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                User user = _praContext.Users.FirstOrDefault(x => x.Id == id);
+                User? user = _praContext.Users.FirstOrDefault(x => x.Id == id);
 
                 if (user == null)
                 {

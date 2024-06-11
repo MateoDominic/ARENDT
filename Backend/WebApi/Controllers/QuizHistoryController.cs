@@ -114,7 +114,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                QuizHistory quizHistory = _praContext.QuizHistories.FirstOrDefault(x => x.Id == id);
+                QuizHistory? quizHistory = _praContext.QuizHistories.FirstOrDefault(x => x.Id == id);
                 if (quizHistory == null) {
                     return NotFound();
                 }

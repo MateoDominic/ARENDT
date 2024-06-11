@@ -15,6 +15,8 @@ public partial class QuizHistory
 
     public string WinnerName { get; set; } = null!;
 
+    public int WinnerScore { get; set; }
+
     public virtual Quiz Quiz { get; set; } = null!;
 
     public virtual User? Winner { get; set; }

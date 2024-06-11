@@ -70,40 +70,45 @@ namespace WebApi.Utilities
 
         public void HandleMessage(IWebSocketConnection connection, string message)
         {
-            connection.ConnectionInfo.Headers.TryGetValue("SessionCode", out string sessionCode);
-            var game = GetGameBySessionCode(sessionCode);
-            if (int.TryParse(message, out int score) && !(game.Key == connection))
+            if (connection.ConnectionInfo.Headers.TryGetValue("SessionCode", out string sessionCode))
             {
-                game.Value[connection].Score += score;
-                gameDictionary[sessionCode] = game;
-                Console.WriteLine(gameDictionary[sessionCode].Value[connection].ToString());
-            }
-            else if (connection.ConnectionInfo.Headers.TryGetValue("QuizId", out string QuizId) &&
-                int.TryParse(QuizId, out int intQuizId) && (game.Key == connection) && int.TryParse(message, out int QuestionNumber))
-            {
-                Console.WriteLine(QuestionNumber);
-                Console.WriteLine(intQuizId);
-
-                var question = _dbServices.GetQuizQuestion(intQuizId, QuestionNumber);
-                Console.WriteLine(question);
-                foreach (var con in game.Value.Keys.ToList())
+                var game = GetGameBySessionCode(sessionCode);
+                if (int.TryParse(message, out int score) && !(game.Key == connection))
                 {
-                    Console.WriteLine(con.ConnectionInfo.Id);
-                    con.Send(JsonSerializer.Serialize(question));
+                    game.Value[connection].Score += score;
+                    gameDictionary[sessionCode] = game;
+                    Console.WriteLine(gameDictionary[sessionCode].Value[connection].ToString());
                 }
-            }
-            else if (message == "leaderboard")
-            {
-                connection.Send(GetLeaderboard(sessionCode));
-                Console.WriteLine(GetLeaderboard(sessionCode));
-            }
-            else if (message == "close")
-            {
-                HandleClose(connection);
-            }
-            else
-            {
-                connection.Send("Bad message");
+                else if (connection.ConnectionInfo.Headers.TryGetValue("QuizId", out string QuizId) &&
+                    int.TryParse(QuizId, out int intQuizId) && (game.Key == connection) && int.TryParse(message, out int QuestionNumber))
+                {
+                    Console.WriteLine(QuestionNumber);
+                    Console.WriteLine(intQuizId);
+
+                    var question = _dbServices.GetQuizQuestion(intQuizId, QuestionNumber);
+                    if (question == null)
+                    {
+                        connection.Send("Bad question position");
+                    }
+                    foreach (var con in game.Value.Keys.ToList())
+                    {
+                        Console.WriteLine(con.ConnectionInfo.Id);
+                        con.Send(JsonSerializer.Serialize(question));
+                    }
+                }
+                else if (message == "leaderboard")
+                {
+                    connection.Send(GetLeaderboard(sessionCode));
+                    Console.WriteLine(GetLeaderboard(sessionCode));
+                }
+                else if (message == "close")
+                {
+                    HandleClose(connection);
+                }
+                else
+                {
+                    connection.Send("Bad message");
+                }
             }
         }
 
