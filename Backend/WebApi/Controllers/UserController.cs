@@ -105,9 +105,16 @@ namespace WebApi.Controllers
         {
             try
             {
+                
                 var existingUser = _praContext.Users.FirstOrDefault(x => x.Username == value.Username);
+                if (existingUser == null) {
+                    return NotFound();
+                }
                 var updatedUser = _mapper.Map<User>(value);
                 updatedUser.JoinDate = existingUser.JoinDate;
+                updatedUser.PasswordHash = existingUser.PasswordHash;
+                updatedUser.PasswordSalt = existingUser.PasswordSalt;
+                _praContext.Entry(existingUser).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
 
                 _praContext.Users.Update(updatedUser);                
                 _praContext.SaveChanges();
