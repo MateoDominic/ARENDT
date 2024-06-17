@@ -16,9 +16,7 @@
       crossorigin="anonymous"
     />
 
-    <link rel="stylesheet"  href="/ResourcesForCSS/Shapes.css"/>
-
-    <title>Registration</title>
+  <title>Registration</title>
   </head>
   <body>
     <!-- <h1 class="text-center">Hello, world!</h1> -->
@@ -32,54 +30,64 @@
           <h1 class = "d-flex justify-content-center">Registriraj se</h1>
            <!-- This is the form on login site -->
           <form>
+
             <div class="form-group">
-              <label for="exampleInputEmail1">Email adresa / korisničko ime:</label>
+              <label for="exampleInputUsername1">Korisničko ime</label>
+              <input
+                type="text"
+                class="form-control"
+                id="exampleInputUsername1"/>
+
+
+            <div class="form-group">
+                <label for="exampleInputPassword1">Lozinka</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="exampleInputPassword1"/>
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputFirstName1">Ime</label>
+              <input
+                type="text"
+                class="form-control"
+                id="exampleInputFirstName1"
+               />
+            </div>
+
+
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email adresa</label>
               <input
                 type="email"
                 class="form-control"
                 id="exampleInputEmail1"
-                aria-describedby="emailHelp"
+    
               />
-              <small id="emailHelp" class="form-text text-muted"
-                >Nikada nećemo dijeliti vašu e-poštu ni s kim drugim.</small
-              >
-            </div>
-            <div class="form-group">
-              <label for="exampleInputPassword1">Lozinka</label>
-              <input
-                type="password"
-                class="form-control"
-                id="exampleInputPassword1"
-              />
-            </div>
-            <div class="form-group form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="exampleCheck1"
-              />
-              <label class="form-check-label" for="exampleCheck1"
-                >Zapamti me</label
-              >
             </div>
 
+            <div class="form-group">
+              <label for="exampleInputLastName1">Prezime</label>
+              <input
+                type="text"
+                class="form-control"
+                id="exampleInputLastName1"/>
+            </div>
+         
+
             <div>
-              <button type="submit" class="btn btn-primary mb-3">
-                Logiraj se
+              <button type="submit" class="btn btn-primary mb-3" id="btn-register">
+                Registriraj se
               </button>
             </div>
+            
             <div>
-              <p>Imaš račun? <a href="Login.html">Prijavi se</a></p>
+              <p>Imaš račun? <a href="../HTMLCode/AnonymousUser/Login.html">Prijavi se</a></p>
             </div>
           </form>
         </div>
       </div>
-    </div>
-
-   <!-- Background shapes -->
-    <div class="background-shapes">
-      <div class="triangle"></div>
-      <div class="rectangle"></div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -99,5 +107,13 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+
+
+
+    <script src="/JS/register.js"></script> 
+
+    
+
   </body>
 </html>
+
