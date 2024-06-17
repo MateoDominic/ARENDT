@@ -11,8 +11,6 @@ namespace WebApi.DTOs
         [Required(ErrorMessage = "Username is required")]
         public string Username { get; set; } = null!;
 
-        public int? ProfilePictureId { get; set; }
-
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; } = null!;
 
@@ -23,7 +21,5 @@ namespace WebApi.DTOs
         public string LastName { get; set; } = null!;
 
         public DateTime JoinDate { get; set; }
-
-        public virtual Picture? ProfilePicture { get; set; }
     }
 }

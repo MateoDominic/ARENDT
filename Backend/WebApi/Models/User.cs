@@ -13,8 +13,6 @@ public partial class User
 
     public string PasswordSalt { get; set; } = null!;
 
-    public int? ProfilePictureId { get; set; }
-
     public string FirstName { get; set; } = null!;
 
     public string Email { get; set; } = null!;
@@ -22,8 +20,6 @@ public partial class User
     public string LastName { get; set; } = null!;
 
     public DateTime JoinDate { get; set; }
-
-    public virtual Picture? ProfilePicture { get; set; }
 
     public virtual ICollection<QuizHistory> QuizHistories { get; } = new List<QuizHistory>();
 

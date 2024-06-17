@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DTOs;
 using WebApi.Models;
@@ -13,13 +12,11 @@ namespace WebApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly PraContext _praContext;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IDbService _dbService;
-        public UserController(PraContext praContext, IMapper mapper, IConfiguration configuration, IDbService dbService)
+        public UserController(IMapper mapper, IConfiguration configuration, IDbService dbService)
         {
-            _praContext = praContext;
             _mapper = mapper;
             _configuration = configuration;
             _dbService = dbService;
@@ -31,7 +28,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                UserDTO user = _mapper.Map<UserDTO>(_praContext.Users.FirstOrDefault(x => x.Id == id));
+                UserDTO? user = _dbService.GetUser(id);
                 if (user == null)
                 {
                     return NotFound();
@@ -54,15 +51,8 @@ namespace WebApi.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var newUser = _mapper.Map<User>(value);
-
-                newUser.PasswordSalt = AuthUtilities.GetSalt();
-                newUser.PasswordHash = AuthUtilities.GetStringSha256Hash(value.Password, newUser.PasswordSalt);
-                newUser.JoinDate = DateTime.Now;
-
-                _praContext.Users.Add(newUser);
-                _praContext.SaveChanges();
-                value.Id = newUser.Id;
+                int newId = _dbService.RegisterUser(value);
+                value.Id = newId;
                 return Ok(value);
             }
             catch (Exception ex)
@@ -76,15 +66,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = _praContext.Users.FirstOrDefault(x => x.Username == value.Username);
-
-                if (user == null)
-                {
-                    return BadRequest("Bad username or password");
-                }
-                string v = AuthUtilities.GetStringSha256Hash(value.Password, user.PasswordSalt);
-                
-                if (v != user.PasswordHash)
+                if (!_dbService.LoginUser(value))
                 {
                     return BadRequest("Bad username or password");
                 }
@@ -109,24 +91,19 @@ namespace WebApi.Controllers
         }
 
         // PUT api/<UserController>/5
-        [HttpPut("{id}")]
-        public ActionResult<UserDTO> Put(int id, [FromBody] UserDTO value)
+        [HttpPut]
+        public ActionResult<UserDTO> UpdateUserInfo([FromBody] UserDTO value)
         {
             try
             {
-                
-                var existingUser = _praContext.Users.FirstOrDefault(x => x.Username == value.Username);
-                if (existingUser == null) {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (!_dbService.UpdateUserInfo(value))
+                {
                     return NotFound();
                 }
-                var updatedUser = _mapper.Map<User>(value);
-                updatedUser.JoinDate = existingUser.JoinDate;
-                updatedUser.PasswordHash = existingUser.PasswordHash;
-                updatedUser.PasswordSalt = existingUser.PasswordSalt;
-                _praContext.Entry(existingUser).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-
-                _praContext.Users.Update(updatedUser);                
-                _praContext.SaveChanges();
                 return Ok(value);
             }
             catch (Exception ex)
@@ -136,21 +113,14 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("changePassword")]
-        public ActionResult<UserChangePasswordDTO> Put([FromBody] UserChangePasswordDTO value)
+        public ActionResult<UserChangePasswordDTO> UpdateUserPassword([FromBody] UserChangePasswordDTO value)
         {
             try
             {
-                var existingUser = _praContext.Users.FirstOrDefault(x => x.Username == value.Username);
-                if (existingUser == null || AuthUtilities.GetStringSha256Hash(value.OldPassword, existingUser.PasswordSalt) != existingUser.PasswordHash)
+                if (_dbService.UpdateUserPassword(value))
                 {
-                    return BadRequest();
+                    return BadRequest("Bad username or password");
                 }
-
-                existingUser.PasswordSalt = AuthUtilities.GetSalt();
-                existingUser.PasswordHash = AuthUtilities.GetStringSha256Hash(value.NewPassword, existingUser.PasswordSalt);
-                
-                _praContext.Users.Update(existingUser);
-                _praContext.SaveChanges();
                 return Ok(value);
             }
             catch (Exception ex)
@@ -165,17 +135,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                User? user = _praContext.Users.FirstOrDefault(x => x.Id == id);
-
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
-                UserDTO userDto = _mapper.Map<UserDTO>(user);
-                _praContext.Users.Remove(user);
-                _praContext.SaveChanges();
-
+                var user = _dbService.DeleteUser(id);
                 return Ok(user);
             }
             catch (Exception ex)

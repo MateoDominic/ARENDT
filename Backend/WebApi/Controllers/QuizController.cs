@@ -143,7 +143,7 @@ namespace WebApi.Controllers
                     return NotFound();
                 }
                 
-                return Ok(_dbService.UpdateFullQuiz(updatedQuiz));
+                return Ok(updatedQuiz);
             }
             catch (Exception ex)
             {

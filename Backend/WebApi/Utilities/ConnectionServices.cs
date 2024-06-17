@@ -1,5 +1,4 @@
 ﻿using Fleck;
-using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using WebApi.DTOs;
 
@@ -8,12 +7,22 @@ namespace WebApi.Utilities
     public class PlayerScore
     {
         public string Username { get; set; }
+
         public int Score { get; set; }
+
+        public QuestionDTO? Question { get; set; } = null;
+
+        public bool Answered { get; set; } = true;
 
         public override string ToString()
         {
             return $"{Username}: {Score}";
         }
+    }
+    public class PlayerScoreDTO {
+        public string Username { get; set; }
+
+        public int Score { get; set; }
     }
 
     public interface IConnectionHandler
@@ -32,14 +41,12 @@ namespace WebApi.Utilities
             _dbServices = dbService;
         }
 
-        //seesionCode, <connectionId, PlayerScore>
         private Dictionary<string, KeyValuePair<IWebSocketConnection, Dictionary<IWebSocketConnection, PlayerScore>>> gameDictionary = new();
 
         public void HandleConnection(IWebSocketConnection connection)
         {
             if (connection.ConnectionInfo.Headers.TryGetValue("QuizId", out string quizId) && !connection.ConnectionInfo.Headers.ContainsKey("SessionCode"))
             {
-                //Create session code
                 string newSessionCode = SessionServices.GetNewSessionCode(gameDictionary.Keys.ToList());
                 connection.ConnectionInfo.Headers.Add("SessionCode", newSessionCode);
                 connection.Send(newSessionCode);
@@ -51,14 +58,22 @@ namespace WebApi.Utilities
             {
                 if (gameDictionary.TryGetValue(sessionCode, out KeyValuePair<IWebSocketConnection, Dictionary<IWebSocketConnection, PlayerScore>> game))
                 {
-                    game.Value.Add(connection,
-                        new PlayerScore
-                        {
-                            Username = username,
-                            Score = 0
-                        });
-                    gameDictionary[sessionCode] = game;
-                    UpdateLobby(game);
+                    if (game.Value.Values.Count() >= 20)
+                    {
+                        connection.Send("Sorry, lobby full");
+                        connection.Close();
+                    }
+                    else
+                    {
+                        game.Value.Add(connection,
+                            new PlayerScore
+                            {
+                                Username = username,
+                                Score = 0
+                            });
+                        gameDictionary[sessionCode] = game;
+                        UpdateLobby(game);
+                    }
                 }
                 else
                 {
@@ -75,16 +90,16 @@ namespace WebApi.Utilities
                 var game = GetGameBySessionCode(sessionCode);
                 if (int.TryParse(message, out int score) && !(game.Key == connection))
                 {
-                    game.Value[connection].Score += score;
-                    gameDictionary[sessionCode] = game;
-                    Console.WriteLine(gameDictionary[sessionCode].Value[connection].ToString());
+                    if (game.Value[connection].Question != null && game.Value[connection].Answered == false && game.Value[connection].Question.QuestionMaxPoints >= score)
+                    {
+                        game.Value[connection].Score += score;
+                        gameDictionary[sessionCode] = game;
+                        game.Value[connection].Answered = true;
+                    }
                 }
                 else if (connection.ConnectionInfo.Headers.TryGetValue("QuizId", out string QuizId) &&
                     int.TryParse(QuizId, out int intQuizId) && (game.Key == connection) && int.TryParse(message, out int QuestionNumber))
                 {
-                    Console.WriteLine(QuestionNumber);
-                    Console.WriteLine(intQuizId);
-
                     var question = _dbServices.GetQuizQuestion(intQuizId, QuestionNumber);
                     if (question == null)
                     {
@@ -92,8 +107,9 @@ namespace WebApi.Utilities
                     }
                     foreach (var con in game.Value.Keys.ToList())
                     {
-                        Console.WriteLine(con.ConnectionInfo.Id);
                         con.Send(JsonSerializer.Serialize(question));
+                        game.Value[con].Answered = false;
+                        game.Value[con].Question = question;
                     }
                 }
                 else if (message == "leaderboard")
@@ -120,7 +136,9 @@ namespace WebApi.Utilities
             {
                 if (!(GetGameBySessionCode(sessionCode).Key == null) && connection.ConnectionInfo.Headers.TryGetValue("QuizId", out string quizId))
                 {
-                    await connection.Send(GetLeaderboard(sessionCode));
+                    if (connection.IsAvailable)
+                        await connection.Send(GetLeaderboard(sessionCode));
+                    
 
                     if (gameDictionary.ContainsKey(sessionCode) && gameDictionary[sessionCode].Value.Values.Count > 0)
                     {
@@ -134,9 +152,9 @@ namespace WebApi.Utilities
                             WinnerName = GetWinnerName(game.Value.Values.ToList()),
                             WinnerId = intUserId
                         };
-                        await connection.Send(quizHistoryDTO.ToString());
                         if (connection.IsAvailable)
                         {
+                            await connection.Send(quizHistoryDTO.ToString());
                             await connection.Send(quizHistoryDTO.WinnerName);
                         }
                         foreach (var con in game.Value.Keys.ToList())
@@ -150,13 +168,13 @@ namespace WebApi.Utilities
                     }
                     connection.ConnectionInfo.Headers.Remove("QuizId");
                 }
-                //delete from table
             }
             else
             {
                 if (!(GetGameBySessionCode(sessionCode).Key == null))
                 {
-                    connection.Send(GetLeaderboard(sessionCode));
+                    if (connection.IsAvailable)
+                        await connection.Send(GetLeaderboard(sessionCode));
                     game.Value.Remove(connection);
                     UpdateLobby(game);
                 }
@@ -165,7 +183,7 @@ namespace WebApi.Utilities
             {
                 connection.Close();
             }
-            if (game.Equals(default(KeyValuePair<IWebSocketConnection, Dictionary<IWebSocketConnection, PlayerScore>>)) && !game.Key.IsAvailable && game.Value.All(x => !x.Key.IsAvailable))
+            if (game.Equals(default(KeyValuePair<IWebSocketConnection, Dictionary<IWebSocketConnection, PlayerScore>>)) || (!game.Key.IsAvailable && game.Value.All(x => !x.Key.IsAvailable)))
             {
                 gameDictionary.Remove(sessionCode);
             }
@@ -188,7 +206,7 @@ namespace WebApi.Utilities
             {
                 List<PlayerScore> leaderboard = game.Value.Values.ToList();
                 leaderboard = leaderboard.OrderByDescending(o => o.Score).ToList();
-                Console.WriteLine("Leaderboard:");
+                
                 return JsonSerializer.Serialize(leaderboard);
 
             }

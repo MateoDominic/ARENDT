@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Formats.Asn1;
 using WebApi.DTOs;
 using WebApi.Models;
 
@@ -14,6 +13,18 @@ namespace WebApi.Utilities
         public IEnumerable<QuizDTO> GetQuizzesByAuthorId(int AuthorId);
         public FullQuizDTO? GetQuizById(int QuizId);
         public QuizDTO? DeleteQuiz(int QuizId);
+        public IEnumerable<QuizHistoryDTO>? GetAllQuizHistory();
+        public QuizHistoryDTO? GetQuizHistory(int id);
+        public void AddQuizHistory(QuizHistoryDTO quizHistoryDTO);
+        public IEnumerable<QuizHistoryDTO>? GetQuizHistoryByAuthorId(int authorId);
+        public IEnumerable<QuizHistoryDTO> GetQuizHistoryByQuizId(int quizId);
+        public QuizHistoryDTO? DeleteQuizHistory(int id);
+        public UserDTO? GetUser(int userId);
+        public int RegisterUser(UserRegisterDTO user); 
+        public bool LoginUser(UserLoginDTO user);
+        public UserDTO? DeleteUser(int userId);
+        public bool UpdateUserPassword(UserChangePasswordDTO user);
+        public bool UpdateUserInfo(UserDTO newUser);
     }
 
     public class DbServices : IDbService
@@ -37,11 +48,12 @@ namespace WebApi.Utilities
 
         public FullQuizDTO? UpdateFullQuiz(FullQuizDTO fullQuizDTO)
         {
-            if (_praContext.Quizzes.FirstOrDefault(x => x.Id == fullQuizDTO.QuizId) == null)
+            var existingQuiz = _praContext.Quizzes.AsNoTracking().FirstOrDefault(x => x.Id == fullQuizDTO.QuizId);
+            if (existingQuiz == null)
             {
                 return null;
             }
-
+            _praContext.Entry(existingQuiz).State = EntityState.Detached;
             _praContext.Quizzes.Update(_mapper.Map<Quiz>(fullQuizDTO));
             _praContext.SaveChanges();
             return fullQuizDTO;
@@ -87,7 +99,7 @@ namespace WebApi.Utilities
         }
 
         public QuizDTO? DeleteQuiz(int QuizId) {
-            var existingQuiz = _praContext.Quizzes.FirstOrDefault(x => x.Id == QuizId);
+            var existingQuiz = _praContext.Quizzes.Include("Questions").Include("Questions.Answers").FirstOrDefault(x => x.Id == QuizId);
 
             if (existingQuiz == null)
             {
@@ -102,6 +114,142 @@ namespace WebApi.Utilities
             _praContext.Quizzes.Remove(existingQuiz);
             _praContext.SaveChanges();
             return deletedQuizDto;
+        }
+
+        
+        public IEnumerable<QuizHistoryDTO> GetAllQuizHistory()
+        {
+            return _mapper.Map<IEnumerable<QuizHistoryDTO>>(_praContext.QuizHistories);
+        }
+
+        public QuizHistoryDTO? GetQuizHistory(int id) {
+            QuizHistory? history = _praContext.QuizHistories.FirstOrDefault(x => x.Id == id);
+            if (history == null)
+            {
+                return null;
+            }
+            return _mapper.Map<QuizHistoryDTO>(history);
+        }
+
+        public IEnumerable<QuizHistoryDTO>? GetQuizHistoryByAuthorId(int authorId) {
+            IEnumerable<QuizHistory> histories = _praContext.QuizHistories.Include("Quiz").Where(x => x.Quiz.AuthorId == authorId);
+            if (histories.Count() == 0)
+            {
+                return null;
+            }
+            return _mapper.Map<IEnumerable<QuizHistoryDTO>>(histories);
+        }
+
+        public void AddQuizHistory(QuizHistoryDTO quizHistoryDTO)
+        {
+            QuizHistory quizHistory = _mapper.Map<QuizHistory>(quizHistoryDTO);
+            _praContext.QuizHistories.Add(quizHistory);
+            _praContext.SaveChanges();
+        }
+
+        public IEnumerable<QuizHistoryDTO> GetQuizHistoryByQuizId(int quizId)
+        {
+            IEnumerable<QuizHistory> histories = _praContext.QuizHistories.Include("Quiz").Where(x => x.Quiz.Id == quizId);
+            return _mapper.Map<IEnumerable<QuizHistoryDTO>>(histories);
+        }
+
+        public QuizHistoryDTO? DeleteQuizHistory(int id)
+        {
+            var quizHistory = _praContext.QuizHistories.FirstOrDefault(x => x.Id == id);
+            if (quizHistory == null)
+            {
+                return null;
+            }
+            _praContext.Entry(quizHistory).State = EntityState.Detached;
+            _praContext.QuizHistories.Remove(quizHistory);
+            _praContext.SaveChanges();
+            return _mapper.Map<QuizHistoryDTO>(quizHistory);
+        }
+
+        public UserDTO? GetUser(int userId)
+        {
+            var user = _praContext.Users.FirstOrDefault(x => x.Id == userId);
+            if (user == null)
+            {
+                return null;
+            }
+            return _mapper.Map<UserDTO>(user);
+        }
+
+        public int RegisterUser(UserRegisterDTO user)
+        {
+            var newUser = _mapper.Map<User>(user);
+
+            newUser.PasswordSalt = AuthUtilities.GetSalt();
+            newUser.PasswordHash = AuthUtilities.GetStringSha256Hash(user.Password, newUser.PasswordSalt);
+            newUser.JoinDate = DateTime.Now;
+
+            _praContext.Users.Add(newUser);
+            _praContext.SaveChanges();
+            return newUser.Id;
+        }
+
+        public bool LoginUser(UserLoginDTO user)
+        {
+            var existingUser = _praContext.Users.FirstOrDefault(x => x.Username == user.Username);
+
+            if (existingUser == null)
+            {
+                return false;
+            }
+            string v = AuthUtilities.GetStringSha256Hash(user.Password, existingUser.PasswordSalt);
+            if (existingUser.PasswordHash != v)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public UserDTO? DeleteUser(int userId)
+        {
+            User? user = _praContext.Users.FirstOrDefault(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            UserDTO userDto = _mapper.Map<UserDTO>(user);
+            _praContext.Users.Remove(user);
+            _praContext.SaveChanges();
+            return userDto;
+        }
+
+        public bool UpdateUserPassword(UserChangePasswordDTO user) {
+            var existingUser = _praContext.Users.FirstOrDefault(x => x.Username == user.Username);
+            if (existingUser == null || AuthUtilities.GetStringSha256Hash(user.OldPassword, existingUser.PasswordSalt) != existingUser.PasswordHash)
+            {
+                return false;
+            }
+
+            existingUser.PasswordSalt = AuthUtilities.GetSalt();
+            existingUser.PasswordHash = AuthUtilities.GetStringSha256Hash(user.NewPassword, existingUser.PasswordSalt);
+
+            _praContext.Users.Update(existingUser);
+            _praContext.SaveChanges();
+            return true;
+        }
+
+        public bool UpdateUserInfo(UserDTO newUser) {
+            var existingUser = _praContext.Users.FirstOrDefault(x => x.Id == newUser.Id);
+            if (existingUser == null)
+            {
+                return false;
+            }
+            var updatedUser = _mapper.Map<User>(newUser);
+            updatedUser.JoinDate = existingUser.JoinDate;
+            updatedUser.PasswordHash = existingUser.PasswordHash;
+            updatedUser.PasswordSalt = existingUser.PasswordSalt;
+            _praContext.Entry(existingUser).State = EntityState.Detached;
+
+            _praContext.Users.Update(updatedUser);
+            _praContext.SaveChanges();
+            return true;
         }
     }
 }

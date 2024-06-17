@@ -1,6 +1,4 @@
-﻿using System.Reflection.Emit;
-
-namespace WebApi.Utilities
+﻿namespace WebApi.Utilities
 {
     public static class SessionServices
     {

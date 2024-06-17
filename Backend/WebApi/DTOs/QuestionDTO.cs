@@ -10,8 +10,6 @@ namespace WebApi.DTOs
         [Required(ErrorMessage = "The question text is required")]
         public string QuestionText { get; set; } = null!;
 
-        public Picture? Picture { get; set; } = null;
-
         [Required(ErrorMessage = "A question needs answers")]
         public IEnumerable<AnswerDTO> Answers { get; set; }
 

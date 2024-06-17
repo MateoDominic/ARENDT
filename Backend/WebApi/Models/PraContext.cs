@@ -17,8 +17,6 @@ public partial class PraContext : DbContext
 
     public virtual DbSet<Answer> Answers { get; set; }
 
-    public virtual DbSet<Picture> Pictures { get; set; }
-
     public virtual DbSet<Question> Questions { get; set; }
 
     public virtual DbSet<Quiz> Quizzes { get; set; }
@@ -34,7 +32,7 @@ public partial class PraContext : DbContext
     {
         modelBuilder.Entity<Answer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Answers__3214EC273145EF01");
+            entity.HasKey(e => e.Id).HasName("PK__Answers__3214EC276C191C8F");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.AnswerText).HasMaxLength(150);
@@ -42,41 +40,27 @@ public partial class PraContext : DbContext
 
             entity.HasOne(d => d.Question).WithMany(p => p.Answers)
                 .HasForeignKey(d => d.QuestionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Answers__Questio__395884C4");
-        });
-
-        modelBuilder.Entity<Picture>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Pictures__3214EC27380C9F68");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
+                .HasConstraintName("FK__Answers__Questio__59C55456");
         });
 
         modelBuilder.Entity<Question>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Question__3214EC2732843B41");
+            entity.HasKey(e => e.Id).HasName("PK__Question__3214EC2763EABC20");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.PictureId).HasColumnName("PictureID");
             entity.Property(e => e.QuestionTime).HasDefaultValueSql("((30))");
             entity.Property(e => e.QuizId).HasColumnName("QuizID");
 
-            entity.HasOne(d => d.Picture).WithMany(p => p.Questions)
-                .HasForeignKey(d => d.PictureId)
-                .HasConstraintName("FK__Questions__Pictu__3493CFA7");
-
             entity.HasOne(d => d.Quiz).WithMany(p => p.Questions)
                 .HasForeignKey(d => d.QuizId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Questions__QuizI__3587F3E0");
+                .HasConstraintName("FK__Questions__QuizI__55F4C372");
         });
 
         modelBuilder.Entity<Quiz>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Quizzes__3214EC27FA4C0801");
+            entity.HasKey(e => e.Id).HasName("PK__Quizzes__3214EC27FAC62B69");
 
-            entity.HasIndex(e => e.Title, "UQ__Quizzes__2CB664DCB34D2E74").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Quizzes__2CB664DC4C3A0D1D").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.AuthorId).HasColumnName("AuthorID");
@@ -85,12 +69,12 @@ public partial class PraContext : DbContext
             entity.HasOne(d => d.Author).WithMany(p => p.Quizzes)
                 .HasForeignKey(d => d.AuthorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Quizzes__AuthorI__31B762FC");
+                .HasConstraintName("FK__Quizzes__AuthorI__531856C7");
         });
 
         modelBuilder.Entity<QuizHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__QuizHist__3214EC27A9EB74D7");
+            entity.HasKey(e => e.Id).HasName("PK__QuizHist__3214EC271BB96CD9");
 
             entity.ToTable("QuizHistory");
 
@@ -103,18 +87,18 @@ public partial class PraContext : DbContext
             entity.HasOne(d => d.Quiz).WithMany(p => p.QuizHistories)
                 .HasForeignKey(d => d.QuizId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__QuizHisto__QuizI__3C34F16F");
+                .HasConstraintName("FK__QuizHisto__QuizI__5D95E53A");
 
             entity.HasOne(d => d.Winner).WithMany(p => p.QuizHistories)
                 .HasForeignKey(d => d.WinnerId)
-                .HasConstraintName("FK__QuizHisto__Winne__3D2915A8");
+                .HasConstraintName("FK__QuizHisto__Winne__5E8A0973");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC275222FA86");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC2773F6A01C");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4FA648C3E").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E405C2550A").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Email).HasMaxLength(50);
@@ -123,12 +107,7 @@ public partial class PraContext : DbContext
             entity.Property(e => e.LastName).HasMaxLength(50);
             entity.Property(e => e.PasswordHash).HasMaxLength(256);
             entity.Property(e => e.PasswordSalt).HasMaxLength(256);
-            entity.Property(e => e.ProfilePictureId).HasColumnName("ProfilePictureID");
             entity.Property(e => e.Username).HasMaxLength(75);
-
-            entity.HasOne(d => d.ProfilePicture).WithMany(p => p.Users)
-                .HasForeignKey(d => d.ProfilePictureId)
-                .HasConstraintName("FK__Users__ProfilePi__2DE6D218");
         });
 
         OnModelCreatingPartial(modelBuilder);

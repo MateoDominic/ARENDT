@@ -21,8 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-option.SwaggerDoc("v1",
-    new OpenApiInfo { Title = "PRA Web API", Version = "v1" });
+option.SwaggerDoc("v1", new OpenApiInfo { Title = "PRA Web API", Version = "v1" });
 
 option.AddSecurityDefinition("Bearer",
     new OpenApiSecurityScheme
@@ -114,17 +113,8 @@ websocketServer.Start(connection =>
       connectionHandler.HandleClose(connection);
     connection.OnMessage = message =>
     {
-        Console.WriteLine($"OnMessage {message}");
         connectionHandler.HandleMessage(connection, message);
     };
-    connection.OnBinary = bytes =>
-      Console.WriteLine($"OnBinary {Encoding.UTF8.GetString(bytes)}");
-    connection.OnError = exception =>
-      Console.WriteLine($"OnError {exception.Message}");
-    connection.OnPing = bytes =>
-      Console.WriteLine("OnPing");
-    connection.OnPong = bytes =>
-      Console.WriteLine("OnPong");
 });
 
 app.Run();

@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using WebApi.DTOs;
 using WebApi.Models;
+using WebApi.Utilities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,12 +12,25 @@ namespace WebApi.Controllers
     [ApiController]
     public class QuizHistoryController : ControllerBase
     {
-        private readonly PraContext _praContext;
+        private readonly IDbService _dbService;
         private readonly IMapper _mapper;
-        public QuizHistoryController(PraContext praContext, IMapper mapper)
+        public QuizHistoryController(IMapper mapper, IDbService dbService)
         {
-            _praContext = praContext;
+            _dbService = dbService;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<QuizHistoryDTO>> GetHistory()
+        {
+            try
+            {
+                return Ok(_dbService.GetAllQuizHistory());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // GET: api/<QuizHistoryController>
@@ -27,13 +39,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                IEnumerable<QuizHistory> quizzes = _praContext.QuizHistories.Include("Quiz").Where(x => x.Quiz.AuthorId == AuthorId);
-                if (quizzes.Count() == 0)
-                {
-                    return NotFound();
-                }
-                IEnumerable<QuizHistoryDTO> quizDtos = _mapper.Map<IEnumerable<QuizHistoryDTO>>(quizzes);
-                return Ok(quizDtos);
+                return Ok(_dbService.GetQuizHistoryByAuthorId(AuthorId));
             }
             catch (Exception ex)
             {
@@ -43,17 +49,11 @@ namespace WebApi.Controllers
 
         // GET api/<QuizHistoryController>/5
         [HttpGet("{QuizId}")]
-        public ActionResult<QuizHistoryDTO> GetHistoryByQuizId(int QuizId)
+        public ActionResult<IEnumerable<QuizHistoryDTO>> GetHistoryByQuizId(int QuizId)
         {
             try
             {
-                IEnumerable<QuizHistory> quizzes = _praContext.QuizHistories.Where(x => x.QuizId == QuizId);
-                if (quizzes.Count() == 0)
-                {
-                    return NotFound();
-                }
-                IEnumerable<QuizHistoryDTO> quizDtos = _mapper.Map<IEnumerable<QuizHistoryDTO>>(quizzes);
-                return Ok(quizDtos);
+                return Ok(_dbService.GetQuizHistoryByQuizId(QuizId));
             }
             catch (Exception ex)
             {
@@ -67,40 +67,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                QuizHistory quizHistory = _mapper.Map<QuizHistory>(value);
-                quizHistory.PlayedAt = DateTime.Now;
-
-                _praContext.QuizHistories.Add(quizHistory);
-
-                _praContext.SaveChanges();
-
-                value.Id = quizHistory.Id;
-                return Ok(value);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        // PUT api/<QuizHistoryController>/5
-        [HttpPut("{id}")]
-        public ActionResult<QuizHistoryDTO> Put(int id, [FromBody] QuizHistoryDTO value)
-        {
-            try
-            {
-                /*QuizHistory quiz = _praContext.QuizHistories.FirstOrDefault(x => x.Id == id);
-                if (quiz == null)
-                {
-                    return NotFound();
-                }*/
-                if (id != value.Id)
-                {
-                    return BadRequest();
-                }
-                _praContext.QuizHistories.Update(_mapper.Map<QuizHistory>(value));
-                _praContext.SaveChanges();
-                return Ok(value);
+                _dbService.AddQuizHistory(value);
+                return value;
             }
             catch (Exception ex)
             {
@@ -114,14 +82,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                QuizHistory? quizHistory = _praContext.QuizHistories.FirstOrDefault(x => x.Id == id);
+                QuizHistoryDTO? quizHistory = _dbService.DeleteQuizHistory(id);
                 if (quizHistory == null) {
                     return NotFound();
                 }
 
-                _praContext.QuizHistories.Remove(quizHistory);
-                _praContext.SaveChanges();
-                return Ok(_mapper.Map<QuizHistoryDTO>(quizHistory));
+                return Ok(quizHistory);
             }
             catch (Exception ex)
             {
