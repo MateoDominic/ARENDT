@@ -5,9 +5,12 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
     />
-
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -15,165 +18,429 @@
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="/ResourcesForCSS/Shapes.css" />
+    <!-- Custom CSS -->
     <style>
+      html {
+        height: 100%;
+      }
+      body {
+        font-family: "Pacifico", cursive;
+        min-height: 100%;
+      }   
 
-.overlay-panel {
+
+
+      .overlay-panel {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 40%;
+  left: 50%; /* Adjust the left position as needed */
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 1);
+  background-color: rgba(0, 0, 0, 0.959); /* Increased transparency */
   color: white;
-  padding: 20px;
-  z-index: 2; /* Make sure it's on top of other content */
+  padding: 30px; /* Increased padding */
+  z-index: 2;
+  border-radius: 15px; /* Rounded corners */
+}
+
+
+
+      .media .btn-primary {
+        margin-bottom: 10px; /* Adjust this margin as needed */
+      }
+
+      .media .btn-primary:hover {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      .scrollable {
+        max-height: 400px; /* Adjust this height as needed */
+        overflow-y: auto;
+      }
+
+      .credentials-panel {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      .background-shapes .triangle,
+      .background-shapes .rectangle {
+        display: none; /* Hide background shapes */
+      }
+
+
+      .player-panel {
+  width: 100%; /* Adjust width as needed */
+  background-color: #343a40;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Added shadow to player panel */
+}
+
+.player-panel.gold::before,
+.player-panel.silver::before,
+.player-panel.bronze::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background-color: #ffd700; /* Adjust colors as needed */
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.player-panel.silver::before {
+  background-color: #c0c0c0; /* Silver color */
+}
+
+.player-panel.bronze::before {
+  background-color: #cd7f32; /* Bronze color */
+}
+
+.player-name {
+  font-weight: bold;
+}
+
+.player-points {
+  color: white;
 }
 
     </style>
 
-    <title>Kahoot</title>
-    
+    <title>Arendt</title>
   </head>
   <body>
-     <!-- Top Navigation Bar -->
-     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="HistoryOfGamesAndCreation.html">Kahoot</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="HistoryOfGamesAndCreation.html">Arendt</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ml-auto">
-              <li class="nav-item">
-                <a class="nav-link" href="CreateKahootQuiz.html">Create Quiz</a>
-              </li>
-              <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Profile
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-                      <span class="dropdown-item-text">User Name</span>
-                      <span class="dropdown-item-text">user@example.com</span>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="../AnonymousUser/Login.html">Log out</a>
-                  </div>
-              </li>
-          </ul>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="CreateArendtQuiz.html">Create Quiz</a>
+          </li>
+          <li class="nav-item">
+            <div class="join-quiz-dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="joinQuizDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Join a quiz
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="joinQuizDropdown">
+                <input type="text" class="form-control join-quiz-input" id="joinQuizInput" placeholder="Enter quiz code">
+              </div>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Profile
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
+              <span class="dropdown-item-text">User Name</span>
+              <span class="dropdown-item-text">user@example.com</span>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="../AnonymousUser/Login.html">Log out</a>
+            </div>
+          </li>
+        </ul>
       </div>
-  </nav>
-
+    </nav>
 
     <div class="container mt-5">
       <div class="row">
-        <!-- Quizzes Created Panel -->
-        <div class="col-md-6">
-          <div class="card mb-4">
-            <div class="card-header">
-              <h5>Quizzes Created</h5>
+        <!-- Credentials Panel -->
+        <div class="col-md-4">
+          <div class="credentials-panel">
+            <h5>Update Credentials</h5>
+            <div id="displayCredentials">
+              <p>Current Username: Mateo</p>
+              <p>Email: user@example.com</p>
+              <p>Password: ********</p>
+              <button class="btn btn-primary" id="changeCredentialsBtn">
+                Change Credentials
+              </button>
             </div>
-            <div class="card-body">
-              <div class="media mb-3">
-                <button class="btn btn-primary mr-3">Play</button>
-                <a
-                  href="CreateKahootQuiz.html"
-                  class="d-flex justify-content-between align-items-center w-100"
+            <div id="editCredentials" style="display: none">
+              <form id="credentialsForm">
+                <div class="form-group">
+                  <label>Current Username: Mateo</label>
+                  <label for="nameInput">Enter a new username:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nameInput"
+                    placeholder="Enter new username"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Current Email: user@example.com</label>
+                  <label for="emailInput">Enter a new email:</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="emailInput"
+                    placeholder="Enter new email"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="passwordInput">Enter a new password:</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="passwordInput"
+                    placeholder="Enter new password"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="confirmPasswordInput"
+                    >Confirm new password:</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirmPasswordInput"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+                <button type="button" class="btn btn-primary" id="updateBtn">
+                  Update
+                </button>
+                <button type="button" class="btn btn-secondary" id="cancelBtn">
+                  Cancel
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Old Password Modal -->
+        <div
+          class="modal fade"
+          id="oldPasswordModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="oldPasswordModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="oldPasswordModalLabel">
+                  Confirm Old Password
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
                 >
-                  <div class="media">
-                    <img
-                      src="icon1.png"
-                      class="mr-3"
-                      alt="Quiz Icon"
-                      style="width: 64px; height: 64px"
-                    />
-                    <div class="media-body">
-                      <h5 class="mt-0">Quiz Title 1</h5>
-                    </div>
-                  </div>
-                </a>
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-              <div class="media mb-3">
-                <button class="btn btn-primary mr-3">Play</button>
-                <a
-                  href="CreateKahootQuiz.html"
-                  class="d-flex justify-content-between align-items-center w-100"
-                >
-                  <div class="media">
-                    <img
-                      src="icon2.png"
-                      class="mr-3"
-                      alt="Quiz Icon"
-                      style="width: 64px; height: 64px"
-                    />
-                    <div class="media-body">
-                      <h5 class="mt-0">Test Quiz Title 2</h5>
-                    </div>
-                  </div>
-                </a>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="oldPasswordModalInput">Enter old password:</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="oldPasswordModalInput"
+                    placeholder="Enter old password"
+                  />
+                </div>
               </div>
-              <div class="media">
-                <button class="btn btn-primary mr-3">Play</button>
-                <a
-                  href="CreateKahootQuiz.html"
-                  class="d-flex justify-content-between align-items-center w-100"
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="confirmOldPasswordBtn"
                 >
-                  <div class="media">
-                    <img
-                      src="icon3.png"
-                      class="mr-3"
-                      alt="Quiz Icon"
-                      style="width: 64px; height: 64px"
-                    />
-                    <div class="media-body">
-                      <h5 class="mt-0">Test Quiz Title 3</h5>
-                    </div>
-                  </div>
-                </a>
+                  Confirm
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Quizzes Hosted Panel -->
-<div class="col-md-6">
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5>Quizzes Hosted</h5>
-    </div>
-    <div class="card-body">
-      <div class="media mb-3">
-        <button class="btn btn-primary" onclick="showPopup()">Show Results</button>
-        <p class="ml-3">Test Hosted Quiz Title 1</p>
-      </div>
-      <div class="media mb-3">
-        <button class="btn btn-primary" onclick="showPopup()">Show Results</button>
-        <p class="ml-3">Test Hosted Quiz Title 2</p>
-      </div>
-      <div class="media">
-        <button class="btn btn-primary" onclick="showPopup()">Show Results</button>
-        <p class="ml-3">Test Hosted Quiz Title 3</p>
-      </div>
-    </div>
-  </div>
-</div>
+        <!-- Quizzes Panels -->
+        <div class="col-md-8">
+          <div class="row">
+            <!-- Quizzes Created Panel -->
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h5>Quizzes Created</h5>
+                </div>
+                <div class="card-body scrollable">
+                  <div class="media mb-3">
+                    <button class="btn btn-primary mr-3">Play</button>
+                    <a
+                      href="CreateArendtQuiz.html"
+                      class="d-flex justify-content-between align-items-center w-100"
+                    >
+                      <div class="media-body">
+                        <h5 class="mt-0">Quiz Title 1</h5>
+                        <p>
+                          Description: This is the description for Quiz Title 1.
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="media mb-3">
+                    <button class="btn btn-primary mr-3">Play</button>
+                    <a
+                      href="CreateArendtQuiz.html"
+                      class="d-flex justify-content-between align-items-center w-100"
+                    >
+                      <div class="media-body">
+                        <h5 class="mt-0">Test Quiz Title 2</h5>
+                        <p>
+                          Description: This is the description for Test Quiz
+                          Title 2.
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="media">
+                    <button class="btn btn-primary mr-3">Play</button>
+                    <a
+                      href="CreateArendtQuiz.html"
+                      class="d-flex justify-content-between align-items-center w-100"
+                    >
+                      <div class="media-body">
+                        <h5 class="mt-0">Test Quiz Title 3</h5>
+                        <p>
+                          Description: This is the description for Test Quiz
+                          Title 3.
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-
+            <!-- Quizzes Hosted Panel -->
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h5>Quizzes Hosted</h5>
+                </div>
+                <div class="card-body scrollable">
+                  <div class="media mb-3">
+                    <button class="btn btn-primary" onclick="showPopup()">
+                      Show Results
+                    </button>
+                    <div style="margin-left: 10px">
+                      <p class="mb-1">Test Hosted Quiz Title 1</p>
+                      <p>
+                        Description: This is the description for Test Hosted
+                        Quiz Title 1.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="media mb-3">
+                    <button class="btn btn-primary" onclick="showPopup()">
+                      Show Results
+                    </button>
+                    <div style="margin-left: 10px">
+                      <p class="mb-1">Test Hosted Quiz Title 2</p>
+                      <p>
+                        Description: This is the description for Test Hosted
+                        Quiz Title 2.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="media">
+                    <button class="btn btn-primary" onclick="showPopup()">
+                      Show Results
+                    </button>
+                    <div style="margin-left: 10px">
+                      <p class="mb-1">Test Hosted Quiz Title 3</p>
+                      <p>
+                        Description: This is the description for Test Hosted
+                        Quiz Title 3.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="media">
+                    <button class="btn btn-primary" onclick="showPopup()">
+                      Show Results
+                    </button>
+                    <div style="margin-left: 10px">
+                      <p class="mb-1">Test Hosted Quiz Title 4</p>
+                      <p>
+                        Description: This is the description for Test Hosted
+                        Quiz Title 4.
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Additional quizzes hosted items here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Popup Message -->
     <div class="overlay-panel" id="overlay" style="display: none;">
-      <p>1st player: 1500 points</p>
-      <p>2nd player: 1000 points</p>
-      <p>3rd player: 500 points</p>
-      <p>4th player: 250 points</p>
-      <p>5th player: 100 points</p>
-      <!-- myb change button here or whatever -->
+      <div class="player-panel gold">
+        <span class="player-name">1st: Josip</span>
+        <span class="player-points">1500 points</span>
+      </div>
+      <div class="player-panel silver">
+        <span class="player-name">2nd: Karlo</span>
+        <span class="player-points">1000 points</span>
+      </div>
+      <div class="player-panel bronze">
+        <span class="player-name">3rd: Mateo</span>
+        <span class="player-points">500 points</span>
+      </div>
+      <div class="player-panel">
+        <span class="player-name">4th: Marko</span>
+        <span class="player-points">250 points</span>
+      </div>
+      <div class="player-panel">
+        <span class="player-name">5th: Ana</span>
+        <span class="player-points">100 points</span>
+      </div>
+
+    <!-- Background shapes -->
+    <div class="background-shapes">
+      <div class="triangle"></div>
+      <div class="rectangle"></div>
     </div>
 
     <!-- Optional JavaScript -->
+    
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
       integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
@@ -189,41 +456,82 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
-    
-
-    
-
-
-
     <script>
-function showPopup() {
-    // Get the overlay element
-    var overlay = document.getElementById('overlay');
-    
-    // Show the overlay
-    overlay.style.display = 'block';
-    
-    // Add event listener to close the overlay when clicking outside
-    document.body.addEventListener('click', closePopup);
+      document
+        .getElementById("changeCredentialsBtn")
+        .addEventListener("click", function () {
+          document.getElementById("displayCredentials").style.display = "none";
+          document.getElementById("editCredentials").style.display = "block";
+        });
 
-    // Prevent the click event from propagating to the body
-    event.stopPropagation();
-}
+      document
+        .getElementById("cancelBtn")
+        .addEventListener("click", function () {
+          document.getElementById("displayCredentials").style.display = "block";
+          document.getElementById("editCredentials").style.display = "none";
+        });
 
-function closePopup(event) {
-    // Get the overlay element
-    var overlay = document.getElementById('overlay');
-    
-    // Check if the click is outside the overlay and the overlay is visible
-    if (overlay.style.display === 'block' && !overlay.contains(event.target)) {
-        // Hide the overlay
-        overlay.style.display = 'none';        
-        // Remove the event listener
-        document.body.removeEventListener('click', closePopup);
-    }
-}
+      document
+        .getElementById("updateBtn")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          const newPassword = document.getElementById("passwordInput").value;
+          const confirmPassword = document.getElementById(
+            "confirmPasswordInput"
+          ).value;
 
-      
+          if (newPassword !== confirmPassword) {
+            alert("New passwords do not match. Please try again.");
+            return;
+          }
+
+          $("#oldPasswordModal").modal("show");
+        });
+
+      document
+        .getElementById("confirmOldPasswordBtn")
+        .addEventListener("click", function () {
+          const oldPassword = document.getElementById(
+            "oldPasswordModalInput"
+          ).value;
+
+          // Here you would typically validate the old password and proceed with the update.
+          // For example, you might send an AJAX request to the server to update the credentials.
+
+          // For demonstration purposes, we'll just log a success message and close the modal.
+          console.log(
+            "Old password confirmed. Credentials updated successfully."
+          );
+
+          $("#oldPasswordModal").modal("hide");
+
+          // Optionally, reset the form and return to the display state.
+          document.getElementById("credentialsForm").reset();
+          document.getElementById("displayCredentials").style.display = "block";
+          document.getElementById("editCredentials").style.display = "none";
+        });
+    </script>
+
+
+  
+    <script>
+      function showPopup() {
+        var overlay = document.getElementById("overlay");
+        overlay.style.display = "block";
+        document.body.addEventListener("click", closePopup);
+        event.stopPropagation();
+      }
+
+      function closePopup(event) {
+        var overlay = document.getElementById("overlay");
+        if (
+          overlay.style.display === "block" &&
+          !overlay.contains(event.target)
+        ) {
+          overlay.style.display = "none";
+          document.body.removeEventListener("click", closePopup);
+        }
+      }
     </script>
   </body>
 </html>
