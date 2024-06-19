@@ -18,4 +18,6 @@ public partial class Quiz
     public virtual ICollection<Question> Questions { get; } = new List<Question>();
 
     public virtual ICollection<QuizHistory> QuizHistories { get; } = new List<QuizHistory>();
+
+    public virtual ICollection<QuizRecord> QuizRecords { get; } = new List<QuizRecord>();
 }

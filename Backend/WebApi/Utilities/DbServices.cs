@@ -25,6 +25,10 @@ namespace WebApi.Utilities
         public UserDTO? DeleteUser(int userId);
         public bool UpdateUserPassword(UserChangePasswordDTO user);
         public bool UpdateUserInfo(UserDTO newUser);
+        public QuizRecordDTO? GetQuizRecord(int id);
+        public IEnumerable<QuizRecordDTO>? GetQuizRecordsBySessionCode(string sessionCode);
+        public int AddNewPlayer(QuizRecordDTO quizRecordDTO);
+        public void UpdateQuizRecord(QuizRecordDTO quizRecord);
     }
 
     public class DbServices : IDbService
@@ -143,6 +147,10 @@ namespace WebApi.Utilities
         public void AddQuizHistory(QuizHistoryDTO quizHistoryDTO)
         {
             QuizHistory quizHistory = _mapper.Map<QuizHistory>(quizHistoryDTO);
+            if (quizHistory.WinnerId == 0)
+            {
+                quizHistory.WinnerId = null;
+            }
             _praContext.QuizHistories.Add(quizHistory);
             _praContext.SaveChanges();
         }
@@ -250,6 +258,40 @@ namespace WebApi.Utilities
             _praContext.Users.Update(updatedUser);
             _praContext.SaveChanges();
             return true;
+        }
+
+        public int AddNewPlayer(QuizRecordDTO quizRecordDTO) {
+            quizRecordDTO.Id = 0;
+            var newQuizRecord = _mapper.Map<QuizRecord>(quizRecordDTO);
+            _praContext.QuizRecords.Add(newQuizRecord);
+            _praContext.SaveChanges();
+            return newQuizRecord.Id;
+        }
+
+        public QuizRecordDTO? GetQuizRecord(int id) {
+            var quizRecord = _praContext.QuizRecords.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            if (quizRecord == null)
+            {
+                return null;
+            }
+            _praContext.Entry(quizRecord).State = EntityState.Detached;
+            return _mapper.Map<QuizRecordDTO>(quizRecord);
+        }
+
+        public IEnumerable<QuizRecordDTO>? GetQuizRecordsBySessionCode(string sessionCode)
+        {
+            var quizRecords = _praContext.QuizRecords.AsNoTracking().Where(x => x.SessionId == sessionCode);
+            return _mapper.Map<IEnumerable<QuizRecordDTO>>(quizRecords);
+        }
+
+        public void UpdateQuizRecord(QuizRecordDTO quizRecordDTO)
+        {
+            var quizRecord = _praContext.QuizRecords.FirstOrDefault(x => x.Id == quizRecordDTO.Id);
+            quizRecord.Score = quizRecordDTO.Score;
+            _praContext.Entry(quizRecord).State = EntityState.Detached;
+
+            _praContext.QuizRecords.Update(quizRecord);
+            _praContext.SaveChanges();
         }
     }
 }

@@ -23,6 +23,8 @@ public partial class PraContext : DbContext
 
     public virtual DbSet<QuizHistory> QuizHistories { get; set; }
 
+    public virtual DbSet<QuizRecord> QuizRecords { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -92,6 +94,27 @@ public partial class PraContext : DbContext
             entity.HasOne(d => d.Winner).WithMany(p => p.QuizHistories)
                 .HasForeignKey(d => d.WinnerId)
                 .HasConstraintName("FK__QuizHisto__Winne__5E8A0973");
+        });
+
+        modelBuilder.Entity<QuizRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__QuizReco__3214EC274CF09B2F");
+
+            entity.ToTable("QuizRecord");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.PlayerName).HasMaxLength(75);
+            entity.Property(e => e.QuizId).HasColumnName("QuizID");
+            entity.Property(e => e.Score).HasDefaultValueSql("((0))");
+            entity.Property(e => e.SessionId)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .IsFixedLength();
+
+            entity.HasOne(d => d.Quiz).WithMany(p => p.QuizRecords)
+                .HasForeignKey(d => d.QuizId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__QuizRecor__QuizI__65370702");
         });
 
         modelBuilder.Entity<User>(entity =>

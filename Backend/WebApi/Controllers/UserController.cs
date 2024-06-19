@@ -117,7 +117,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                if (_dbService.UpdateUserPassword(value))
+                if (!_dbService.UpdateUserPassword(value))
                 {
                     return BadRequest("Bad username or password");
                 }

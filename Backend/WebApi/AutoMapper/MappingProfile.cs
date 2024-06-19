@@ -30,6 +30,9 @@ namespace WebApi.AutoMapper
 
             CreateMap<QuizHistory, QuizHistoryDTO>();
             CreateMap<QuizHistoryDTO, QuizHistory>();
+
+            CreateMap<QuizRecord, QuizRecordDTO>();
+            CreateMap<QuizRecordDTO, QuizRecord>();
         }
     }
 }
