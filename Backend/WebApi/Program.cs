@@ -69,7 +69,7 @@ builder.Services.AddScoped<IConnectionHandler, ConnectionHandler>();
 
 
 builder.Services.AddDbContext<PraContext>(options => {
-    options.UseSqlServer("name=ConnectionStrings:PRAcs");
+    options.UseSqlServer("server=.;Database=PRA;User=sa;Password=neznam;TrustServerCertificate=True;MultipleActiveResultSets=true");
 });
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
