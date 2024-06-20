@@ -1,0 +1,36 @@
+      body {
+        background-color: #f0f0f0; /* Light gray background */
+        position: relative;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+      }
+
+      .background-shapes {
+        position: fixed; /* Fix the shapes relative to the viewport */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1; /* Push shapes behind other content */
+      }
+
+      .triangle {
+        position: absolute;
+        top: 35%;
+        left: 5%;
+        border-left: 25vw solid transparent; /* Adjust size */
+        border-right: 25vw solid transparent; /* Adjust size */
+        border-bottom: 50vh solid #e0e0e0; /* Adjust color and size */
+        transform: rotate(20deg); /* Rotate the triangle */
+      }
+
+      .rectangle {
+        position: absolute;
+        bottom: 60%;
+        right: 10%;
+        width: 40%; /* Adjust width */
+        height: 40%; /* Adjust height */
+        background-color: #e0e0e0; /* Adjust color */
+        transform: rotate(10deg); /* Rotate the rectangle */
+      }
+

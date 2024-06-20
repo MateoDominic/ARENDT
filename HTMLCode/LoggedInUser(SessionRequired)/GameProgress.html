@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Arendt</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  
+  
+  <style>
+    body {
+      overflow: hidden;
+      height: 100vh;
+    }
+    
+    .container-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      top: -20px;
+      height: 75vh;
+      position: relative;
+    }
+
+    .question-panel {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      margin-top: 30px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Added shadow to question panel */
+    }
+
+    .answer-panel {
+      height: 240px;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+      padding-left: 30px;
+      padding-right: 30px;
+      color: white;
+      margin-bottom: 30px;
+      border-radius: 10px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Added shadow on bottom and left */
+    }
+
+    .answer-panel i {
+      margin-right: 15px;
+    }
+
+    .timer {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(green 0% 360deg, transparent 360deg 360deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      z-index: 10;
+      overflow: hidden;
+      box-shadow: 0 0 0 5px white;
+    }
+
+    .timer .inner-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+
+    .timer span {
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-next {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 1000;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+    }
+
+    .overlay-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgb(80, 0, 228);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      color: white;
+      font-size: 2rem;
+    }
+
+    .player-panel {
+      width: 60%;
+      background-color: #343a40;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Added shadow to player panel */
+    }
+
+    .player-panel.gold::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #ffd700;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+
+    .player-panel.silver::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #c0c0c0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+
+    .player-panel.bronze::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #cd7f32;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+
+    .player-name {
+      font-weight: bold;
+    }
+
+    .player-points {
+      color: white;
+    }
+
+    .background-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .triangle {
+      position: absolute;
+      top: 35%;
+      left: 5%;
+      border-left: 25vw solid transparent;
+      border-right: 25vw solid transparent;
+      border-bottom: 50vh solid #6e20ff;
+      transform: rotate(20deg);
+    }
+
+    .rectangle {
+      position: absolute;
+      bottom: 60%;
+      right: 10%;
+      width: 40%;
+      height: 40%;
+      background-color: #6e20ff;
+      transform: rotate(10deg);
+    }
+
+    .triangle2 {
+      position: absolute;
+      top: 35%;
+      left: 5%;
+      border-left: 25vw solid transparent;
+      border-right: 25vw solid transparent;
+      border-bottom: 50vh solid #867c9473;
+      transform: rotate(20deg);
+    }
+
+    .rectangle2 {
+      position: absolute;
+      bottom: 60%;
+      right: 10%;
+      width: 40%;
+      height: 40%;
+      background-color: #867c9473;
+      transform: rotate(10deg);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container question-panel text-center">
+    <h1 class="mb-4 mt-3">How can educators adapt their teaching methods to better accommodate diverse learning styles and ensure all students have equal opportunities for academic success?</h1>
+  </div>
+
+  <div class="container container-center text-center">
+    <div class="timer" id="timer">
+      <div class="inner-circle"></div>
+      <span id="timer-number"></span>
+    </div>
+    
+    <div class="row w-100">
+      <div class="col-md-6">
+        <div class="answer-panel bg-danger"><i class="fas fa-star fa-2x"></i>Answer 1</div>
+      </div>
+      <div class="col-md-6">
+        <div class="answer-panel bg-primary"><i class="fas fa-square fa-2x"></i>Answer 2</div>
+      </div>
+      <div class="col-md-6">
+        <div class="answer-panel bg-dark"><i class="fas fa-crown fa-2x"></i>Answer 3</div>
+      </div>
+      <div class="col-md-6">
+        <div class="answer-panel bg-success"><i class="fas fa-circle fa-2x"></i>Answer 4</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="background-shapes">
+    <div class="triangle2"></div>
+    <div class="rectangle2"></div>
+  </div>
+
+  <!-- Next button positioned at bottom right -->
+  <button class="btn btn-primary btn-next">Next</button>
+
+  <div class="overlay-panel" id="overlay" style="display: none;">
+    <h1 class="pb-5 font-weight-bold display-4">Leaderboard:</h1>
+    <div class="player-panel gold">
+      <span class="player-name">1st player: Josip</span>
+      <span class="player-points">1500 points</span>
+    </div>
+    <div class="player-panel silver">
+      <span class="player-name">2nd player: Karlo</span>
+      <span class="player-points">1000 points</span>
+    </div>
+    <div class="player-panel bronze">
+      <span class="player-name">3rd player: Mateo</span>
+      <span class="player-points">500 points</span>
+    </div>
+    <div class="player-panel">
+      <span class="player-name">4th player: Marko</span>
+      <span class="player-points">250 points</span>
+    </div>
+    <div class="player-panel">
+      <span class="player-name">5th player: Borna</span>
+      <span class="player-points">100 points</span>
+    </div>
+    <button class="btn btn-primary btn-next">Next</button>
+
+    <div class="background-shapes">
+      <div class="triangle"></div>
+      <div class="rectangle"></div>
+    </div>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPoIEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  <script>
+    // Timer functionality
+    var totalTime = 7; // Total time for the timer
+    var timeLeft = totalTime; // Time left
+    var timerElement = document.getElementById('timer');
+    var timerNumberElement = document.getElementById('timer-number');
+    var overlayElement = document.getElementById('overlay');
+
+    var timerInterval = setInterval(function() {
+      if (timeLeft <= 0) {
+        var angle = ((totalTime - timeLeft) / totalTime) * 360;
+        timerElement.style.background = `conic-gradient(transparent 0% ${angle}deg, red ${angle}deg 360deg)`;
+        clearInterval(timerInterval);
+        timerNumberElement.innerHTML = "Time!";
+        overlayElement.style.display = 'flex'; // Display the overlay
+      } else {
+        timerNumberElement.innerHTML = timeLeft;
+        var angle = ((totalTime - timeLeft) / totalTime) * 360;
+        timerElement.style.background = `conic-gradient(transparent 0% ${angle}deg, green ${angle}deg 360deg)`;
+
+        if ((timeLeft <= totalTime * 0.50) && (timeLeft > totalTime * 0.25)) {
+          timerElement.style.background = `conic-gradient(transparent 0% ${angle}deg, yellow ${angle}deg 360deg)`;
+        }
+
+        // Change color to red when remaining time is 25% of total time
+        if (timeLeft <= totalTime * 0.25) {
+          timerElement.style.background = `conic-gradient(transparent 0% ${angle}deg, red ${angle}deg 360deg)`;
+        }
+      }
+      timeLeft -= 1;
+    }, 1000);
+  </script>
+</body>
+</html>
