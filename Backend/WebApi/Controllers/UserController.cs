@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DTOs;
 using WebApi.Models;
@@ -12,18 +13,17 @@ namespace WebApi.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IDbService _dbService;
-        public UserController(IMapper mapper, IConfiguration configuration, IDbService dbService)
+        public UserController(IConfiguration configuration, IDbService dbService)
         {
-            _mapper = mapper;
             _configuration = configuration;
             _dbService = dbService;
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<UserDTO> Get(int id)
         {
             try
@@ -92,6 +92,7 @@ namespace WebApi.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut]
+        [Authorize]
         public ActionResult<UserDTO> UpdateUserInfo([FromBody] UserDTO value)
         {
             try
@@ -113,6 +114,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("changePassword")]
+        [Authorize]
         public ActionResult<UserChangePasswordDTO> UpdateUserPassword([FromBody] UserChangePasswordDTO value)
         {
             try

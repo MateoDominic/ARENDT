@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DTOs;
 using WebApi.Models;
@@ -12,17 +13,14 @@ namespace WebApi.Controllers
     [ApiController]
     public class QuizController : ControllerBase
     {
-        private readonly PraContext _praContext;
-        private readonly IMapper _mapper;
         private readonly IDbService _dbService;
-        public QuizController(PraContext praContext, IMapper mapper, IDbService dbService)
+        public QuizController(IDbService dbService)
         {
-            _praContext = praContext;
-            _mapper = mapper;
             _dbService = dbService;
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<FullQuizDTO>> GetAllQuizzes()
         {
             try
@@ -37,6 +35,7 @@ namespace WebApi.Controllers
 
         // GET: api/<QuizController>
         [HttpGet("details/{AuthorId}")]
+        [Authorize]
         public ActionResult<IEnumerable<QuizDTO>> GetQuizzesByAuthorID(int AuthorId)
         {
             try
@@ -50,6 +49,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{QuizId}")]
+        [Authorize]
         public ActionResult<FullQuizDTO> GetQuizByQuizID(int QuizId)
         {
             try
@@ -69,6 +69,7 @@ namespace WebApi.Controllers
 
         // POST api/<QuizController>
         [HttpPost]
+        [Authorize]
         public ActionResult<FullQuizDTO> Post([FromBody] FullQuizDTO quizDto)
         {
             try
@@ -109,6 +110,7 @@ namespace WebApi.Controllers
 
         // PUT api/<QuizController>/5
         [HttpPut]
+        [Authorize]
         public ActionResult<FullQuizDTO> Put([FromBody] FullQuizDTO quizDto)
         {
             try
@@ -153,6 +155,7 @@ namespace WebApi.Controllers
 
         // DELETE api/<QuizController>/5
         [HttpDelete("{id}")]
+        [Authorize]
         public ActionResult<QuizDTO> Delete(int id)
         {
             try

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.DTOs;
 using WebApi.Models;
@@ -13,14 +14,13 @@ namespace WebApi.Controllers
     public class QuizHistoryController : ControllerBase
     {
         private readonly IDbService _dbService;
-        private readonly IMapper _mapper;
-        public QuizHistoryController(IMapper mapper, IDbService dbService)
+        public QuizHistoryController(IDbService dbService)
         {
             _dbService = dbService;
-            _mapper = mapper;
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult<IEnumerable<QuizHistoryDTO>> GetHistory()
         {
             try
@@ -35,6 +35,7 @@ namespace WebApi.Controllers
 
         // GET: api/<QuizHistoryController>
         [HttpGet("author/{AuthorId}")]
+        [Authorize]
         public ActionResult<IEnumerable<QuizHistoryDTO>> GetHistoryByAuthorId(int AuthorId)
         {
             try
@@ -49,6 +50,7 @@ namespace WebApi.Controllers
 
         // GET api/<QuizHistoryController>/5
         [HttpGet("{QuizId}")]
+        [Authorize]
         public ActionResult<IEnumerable<QuizHistoryDTO>> GetHistoryByQuizId(int QuizId)
         {
             try
@@ -62,7 +64,8 @@ namespace WebApi.Controllers
         }
 
         // POST api/<QuizHistoryController>
-        [HttpPost]
+        /*[HttpPost]
+        [Authorize]
         public ActionResult<QuizHistoryDTO> Post([FromBody] QuizHistoryDTO value)
         {
             try
@@ -74,10 +77,11 @@ namespace WebApi.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-        }
+        }*/
 
         // DELETE api/<QuizHistoryController>/5
         [HttpDelete("{id}")]
+        [Authorize]
         public ActionResult<QuizHistoryDTO> Delete(int id)
         {
             try
