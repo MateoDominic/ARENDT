@@ -13,7 +13,7 @@ CREATE TABLE Quizzes(
 	ID int primary key identity(1, 1),
 	Title nvarchar(75) unique not null,
 	Description nvarchar(max) not null,
-	AuthorID int foreign key references Users(ID) not null
+	AuthorID int foreign key references Users(ID) cascade delete not null
 );
 
 CREATE TABLE Questions(

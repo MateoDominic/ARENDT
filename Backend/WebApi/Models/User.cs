@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Models;
 
 public partial class User
 {
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     public string Username { get; set; } = null!;
@@ -24,4 +27,10 @@ public partial class User
     public virtual ICollection<QuizHistory> QuizHistories { get; } = new List<QuizHistory>();
 
     public virtual ICollection<Quiz> Quizzes { get; } = new List<Quiz>();
+
+    public bool Equals(User other)
+    {
+        if (other == null) return false;
+        return (Id.Equals(other.Id));
+    }
 }
