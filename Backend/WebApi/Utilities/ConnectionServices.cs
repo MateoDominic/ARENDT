@@ -1,5 +1,6 @@
 ﻿using Fleck;
 using System.Text.Json;
+using System.Web;
 using WebApi.DTOs;
 
 namespace WebApi.Utilities
@@ -32,6 +33,8 @@ namespace WebApi.Utilities
 
     public class ConnectionHandler : IConnectionHandler
     {
+        private string defaultPath = "ws://0.0.0.0:8181";
+
         private readonly IDbService _dbServices;
         public ConnectionHandler(IDbService dbService)
         {
@@ -42,18 +45,24 @@ namespace WebApi.Utilities
 
         public void HandleConnection(IWebSocketConnection connection)
         {
-            if (connection.ConnectionInfo.Headers.TryGetValue("QuizId", out string quizId) && !connection.ConnectionInfo.Headers.ContainsKey("SessionCode"))
+            if (TryGetQuizId(connection.ConnectionInfo.Path) != null && TryGetSessionCode(connection.ConnectionInfo.Path) == null && TryGetUsername(connection.ConnectionInfo.Path) != null)
             {
                 string newSessionCode = SessionServices.GetNewSessionCode(gameDictionary.Keys.ToList());
                 connection.ConnectionInfo.Headers.Add("SessionCode", newSessionCode);
+                connection.ConnectionInfo.Headers.Add("QuizId", TryGetQuizId(connection.ConnectionInfo.Path).ToString());
+                connection.ConnectionInfo.Headers.Add("Username", TryGetUsername(connection.ConnectionInfo.Path));
                 connection.Send(newSessionCode);
                 
                 gameDictionary.Add(newSessionCode, new KeyValuePair<IWebSocketConnection, Dictionary<IWebSocketConnection, PlayerScore>>(
                     connection,
                     new Dictionary<IWebSocketConnection, PlayerScore>()));
             }
-            else if (connection.ConnectionInfo.Headers.TryGetValue("SessionCode", out string sessionCode) && connection.ConnectionInfo.Headers.TryGetValue("Username", out string username))
+            else if (TryGetSessionCode(connection.ConnectionInfo.Path) != null && TryGetUsername(connection.ConnectionInfo.Path) != null)
             {
+                string sessionCode = TryGetSessionCode(connection.ConnectionInfo.Path);
+                connection.ConnectionInfo.Headers.Add("SessionCode", sessionCode);
+                string username = TryGetUsername(connection.ConnectionInfo.Path);
+                connection.ConnectionInfo.Headers.Add("Username", username);
                 if (gameDictionary.TryGetValue(sessionCode, out KeyValuePair<IWebSocketConnection, Dictionary<IWebSocketConnection, PlayerScore>> game))
                 {
                     if (game.Value.Values.Count() >= 20)
@@ -63,8 +72,7 @@ namespace WebApi.Utilities
                     }
                     else
                     {
-                        game.Key.ConnectionInfo.Headers.TryGetValue("QuizId", out string QuizId);
-                        int.TryParse(QuizId, out int recordQuizId);
+                        int recordQuizId = (int)TryGetQuizId(game.Key.ConnectionInfo.Path);
                         int id = _dbServices.AddNewPlayer(new QuizRecordDTO
                         {
                             PlayerName = username,
@@ -244,6 +252,32 @@ namespace WebApi.Utilities
         {
             gameDictionary.TryGetValue(sessionCode, out KeyValuePair<IWebSocketConnection, Dictionary<IWebSocketConnection, PlayerScore>> game);
             return game;
+        }
+
+        private int? TryGetQuizId(string path) {
+            path = path.Remove(0,1);
+            string? v = HttpUtility.ParseQueryString(path).Get("QuizId");
+            if (v == null)
+            {
+                return null;
+            }
+            else {
+                int.TryParse(v, out int result);
+                return result;
+            }
+        }
+        
+        private string TryGetSessionCode(string path) {
+            path = path.Remove(0, 1);
+            string? v = HttpUtility.ParseQueryString(path).Get("SessionCode");
+            return v;
+        }
+
+        private string? TryGetUsername(string path)
+        {
+            path = path.Remove(0, 1);
+            string? v = HttpUtility.ParseQueryString(path).Get("Username");
+            return v;
         }
     }
 }

@@ -77,6 +77,12 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 var app = builder.Build();
+
+app.UseCors(builder => builder
+     .AllowAnyOrigin()
+     .AllowAnyMethod()
+     .AllowAnyHeader());
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -105,6 +111,7 @@ websocketServer.Start(connection =>
     {
         Console.WriteLine("OnOpen");
         Console.WriteLine(connection.ConnectionInfo.Id);
+        Console.WriteLine(connection.ConnectionInfo.Path);
         connection.ConnectionInfo.Headers.TryGetValue("SessionCode", out string sessionCode);
         Console.WriteLine(sessionCode);
         connectionHandler.HandleConnection(connection);
