@@ -6,6 +6,7 @@ using WebApi.Models;
 namespace WebApi.Utilities
 {
     public interface IDbService {
+        public UserDTO? GetUserByUsername(string username);
         public IEnumerable<UserDTO> GetUsers();
         public FullQuizDTO AddFullQuiz(FullQuizDTO fullQuizDTO);
         public FullQuizDTO? UpdateFullQuiz(FullQuizDTO fullQuizDTO);
@@ -354,6 +355,11 @@ namespace WebApi.Utilities
 
             _praContext.QuizRecords.Update(quizRecord);
             _praContext.SaveChanges();
+        }
+        
+        public UserDTO? GetUserByUsername(string username)
+        {
+            return GetUsers().FirstOrDefault(x => x.Username == username);
         }
     }
 }

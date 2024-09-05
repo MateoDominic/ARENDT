@@ -1,4 +1,5 @@
 ﻿using Fleck;
+using System.Net.Sockets;
 using System.Text.Json;
 using System.Web;
 using WebApi.DTOs;
@@ -72,6 +73,7 @@ namespace WebApi.Utilities
                     }
                     else
                     {
+                        connection.Send("Good");
                         int recordQuizId = (int)TryGetQuizId(game.Key.ConnectionInfo.Path);
                         int id = _dbServices.AddNewPlayer(new QuizRecordDTO
                         {

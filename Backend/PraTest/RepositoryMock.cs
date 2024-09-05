@@ -13,15 +13,15 @@ namespace PraTest
 
         public static DbServices GetQuizMock()
         {
-            List<Quiz> lstUser = GenerateQuizData();
-            PraContext dbContextMock = DbContextMock.GetMock<Quiz, PraContext>(lstUser, x => x.Quizzes);
+            List<Quiz> lstQuiz = GenerateQuizData();
+            PraContext dbContextMock = DbContextMock.GetMock<Quiz, PraContext>(lstQuiz, x => x.Quizzes);
             return new DbServices(dbContextMock, MappingProfileProvider.InitializeAutoMapper().CreateMapper());
         }
 
         public static DbServices GetQuizHistoryMock()
         {
-            List<QuizHistory> lstUser = GenerateQuizHistoryData();
-            PraContext dbContextMock = DbContextMock.GetMock<QuizHistory, PraContext>(lstUser, x => x.QuizHistories);
+            List<QuizHistory> lstQuizHistories = GenerateQuizHistoryData();
+            PraContext dbContextMock = DbContextMock.GetMock<QuizHistory, PraContext>(lstQuizHistories, x => x.QuizHistories);
             return new DbServices(dbContextMock, MappingProfileProvider.InitializeAutoMapper().CreateMapper());
         }
 

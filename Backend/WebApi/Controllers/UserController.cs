@@ -70,7 +70,11 @@ namespace WebApi.Controllers
                 {
                     return BadRequest("Bad username or password");
                 }
-
+                var user = _dbService.GetUserByUsername(value.Username);
+                if (user == null)
+                {
+                    return StatusCode(500, "Something went wrong");
+                }
                 var secureKey = _configuration["JWT:SecureKey"];
                 if (secureKey == null)
                 {
@@ -80,7 +84,8 @@ namespace WebApi.Controllers
                     JwtTokenProvider.CreateToken(
                         secureKey,
                         120,
-                        value.Username);
+                        user.Username,
+                        user.Id);
 
                 return Ok(serializedToken);
             }
