@@ -1,41 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
+<!DOCTYPE html> 
+<html lang="en"> 
+  <head> 
+    <!-- Required meta tags --> 
+    <meta charset="utf-8" /> 
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-
-    <!-- Bootstrap CSS -->
-    <link
+    /> 
+    
+    <!-- Bootstrap CSS --> 
+    <link 
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
     <!-- Custom CSS for background shapes -->
-    <link rel="stylesheet" href="/ResourcesForCSS/Shapes.css" />
+    <link rel="stylesheet" href="../ResourcesForCSS/Shapes.css"/> 
 
-    <title>Login</title>
-  </head>
-  <body>
+    <title>Login</title> 
+  </head> 
+  <body> 
     <!-- This is the outside panel -->
-    <div
+    <div 
       class="container d-flex justify-content-center align-items-center"
       style="min-height: 100vh"
-    >
+    > 
       <div class="card" style="width: 100%; max-width: 400px">
         <div class="card-body">
           <h1 class="d-flex justify-content-center">Prijavi se</h1>
           <!-- Login form -->
-          <form>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Email adresa / korisničko ime</label>
-              <input
+          <form> 
+            <div class="form-group"> 
+              <label for="exampleInputUsername1">Korisničko ime</label>
+              <input 
+                type="text"  
                 class="form-control"
-                id="exampleInputEmail1"
+                id="exampleInputUsername1" 
                 aria-describedby="emailHelp"
               />
               <small id="emailHelp" class="form-text text-muted"
@@ -48,23 +49,14 @@
                 type="password"
                 class="form-control"
                 id="exampleInputPassword1"
-              />
-            </div>
-            <div class="form-group form-check">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="exampleCheck1"
-              />
-              <label class="form-check-label" for="exampleCheck1">Zapamti me</label>
-            </div>
-
-            <div>
-              <button type="submit" class="btn btn-primary mb-3">Logiraj se</button>
-            </div>
-            <div>
-              <p class="mb-0">
-                Zaboravio si lozinku? <a href="../workInProgress.html">Resetiraj lozinku</a>
+              /> 
+            </div> 
+            <div> 
+              <button type="submit" class="btn btn-primary mb-3" id="btn-login">Logiraj se</button>
+            </div> 
+            <div> 
+              <p class="mb-0"> 
+                Želiš li promijeniti lozinku? <a href="../AnonymousUser/ChangePassword.html">Resetiraj lozinku</a>
               </p>
             </div>
             <div>
@@ -79,9 +71,10 @@
     <div class="background-shapes">
       <div class="triangle"></div>
       <div class="rectangle"></div>
-    </div>
+    </div> 
 
-    <!-- Optional JavaScript -->
+    <!-- Optional JavaScript --> 
+     <script src="/JS/login.js"></script> 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -98,5 +91,5 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
-  </body>
-</html>
+  </body> 
+</html> 

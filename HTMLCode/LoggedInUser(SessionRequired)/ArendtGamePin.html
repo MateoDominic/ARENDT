@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
+ 
   <!-- Bootstrap CSS -->
   <link
     rel="stylesheet"
@@ -11,27 +11,65 @@
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
     crossorigin="anonymous"
   />
-
+ 
   <!-- Google Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
     rel="stylesheet"
   />
-
+ 
   <!-- Custom CSS for shapes -->
   <link rel="stylesheet" href="/ResourcesForCSS/Shapes.css" />
-
+ 
   <title>Arendt</title>
-
+ 
   <!-- Internal CSS styles -->
   <style>
     body {
       font-family: "Pacifico", cursive;
       min-height: 100%;
-      background-color: #e6e6fa; /* Light purple background */
+      background-color: #e6e6fa;
       padding-left: 0; /* Changed padding to 0 for full width */
     }
+ 
+    .container-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      top: -10px;
+      height: 60vh;  
+      position: relative;
+    }
+ 
+    .question-panel {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    }
 
+    .answer-panel {
+      height: 150px;  
+      font-size: 20px;  
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+      padding-left: 10px;
+      padding-right: 10px;
+      color: white;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);  
+    }
+ 
+    .answer-panel i {
+      margin-right: 10px;
+    }
+ 
     .code-panel {
       position: relative;
       text-align: center;
@@ -44,32 +82,32 @@
       margin-bottom: 20px;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Added box shadow */
     }
-
+ 
     .code-panel strong {
       font-size: 2.5rem; /* Bigger font size for code */
       font-weight: bold; /* Bold font weight */
     }
-
+ 
     .player-list {
       margin-top: 20px; /* Adjusted margin for spacing */
       column-count: 4; /* Number of columns */
       column-gap: 20px; /* Gap between columns */
       text-align: center; /* Centered the player names */
     }
-
+ 
     .player-name {
       font-size: 24px; /* Larger font size for names */
       font-weight: bold; /* Bold font weight */
       margin-bottom: 10px; /* Added space between names */
       display: block; /* Display names as blocks */
     }
-
+ 
     .play-quiz-button {
       position: fixed;
       bottom: 20px;
       right: 20px;
     }
-
+ 
     .player-count {
       position: absolute;
       top: 260px; /* Adjusted position */
@@ -78,16 +116,203 @@
       font-weight: bold;
       font-style: italic; /* Italic font style */
     }
-
+ 
     /* Fixing top navbar */
     .navbar {
       padding-left: 20px; /* Added padding to align with the left side */
       padding-right: 20px; /* Added padding to align with the right side */
     }
-
+ 
     .navbar-brand {
       margin-right: 0; /* Removed default margin for better alignment */
     }
+ 
+    #GameProgressPage {
+      display: none;
+    }
+ 
+    .timer {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(green 0% 360deg, transparent 360deg 360deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      z-index: 10;
+      overflow: hidden;
+      box-shadow: 0 0 0 5px white;
+    }
+ 
+    .timer .inner-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+ 
+    .timer span {
+      position: relative;
+      z-index: 2;
+    }
+ 
+    .btn-next {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 1000;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+    }
+ 
+    .overlay-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgb(80, 0, 228);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      color: white;
+      font-size: 2rem;
+    }
+ 
+    .player-panel {
+      width: 60%;
+      background-color: #343a40;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Added shadow to player panel */
+    }
+ 
+    .player-panel.gold::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #ffd700;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+ 
+    .player-panel.silver::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #c0c0c0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+ 
+    .player-panel.bronze::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #cd7f32;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    
+    .player-name {
+      font-weight: bold;
+    }
+ 
+    .player-points {
+      color: white;
+    }
+ 
+    .background-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+ 
+    .triangle {
+      position: absolute;
+      top: 35%;
+      left: 5%;
+      border-left: 25vw solid transparent;
+      border-right: 25vw solid transparent;
+      border-bottom: 50vh solid #6e20ff;
+      transform: rotate(20deg);
+    }
+ 
+    .rectangle {
+      position: absolute;
+      bottom: 60%;
+      right: 10%;
+      width: 40%;
+      height: 40%;
+      background-color: #6e20ff;
+      transform: rotate(10deg);
+    }
+ 
+    .triangle2 {
+      position: absolute;
+      top: 35%;
+      left: 5%;
+      border-left: 25vw solid transparent;
+      border-right: 25vw solid transparent;
+      border-bottom: 50vh solid #867c9473;
+      transform: rotate(20deg);
+    }
+ 
+    .rectangle2 {
+      position: absolute;
+      bottom: 60%;
+      right: 10%;
+      width: 40%;
+      height: 40%;
+      background-color: #867c9473;
+      transform: rotate(10deg);
+    } 
+    
+    .loading-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      text-align: center;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    
   </style>
 </head>
 <body>
@@ -140,29 +365,106 @@
   </nav>
 
   <!-- Central Code Panel -->
-  <div class="container mt-5">
+  <div class="container mt-5" id="CreateKahootPinPage">
     <!-- Code panel displaying a code -->
-    <div class="code-panel"><strong>Join Arendt with code: <span style="font-size: 2.5rem;">123456</span></strong></div>
-
+    <div class="code-panel"><strong>Join Arendt with code: <span style="font-size: 2.5rem;" id="session-code"></span></strong></div>
+ 
     <!-- Player List -->
     <div class="player-list" id="playerList">
       <!-- Player names will be dynamically added here -->
     </div>
-  </div>
-
+ 
   <!-- Player Count Display -->
   <div id="playerCount" class="player-count"></div>
-
+ 
   <!-- Play Quiz Button -->
-  <button class="btn btn-primary play-quiz-button">Play quiz</button>
-
+  <button class="btn btn-primary play-quiz-button" id="KahootGamePin-playBtn">Play quiz</button>
+ 
   <!-- Background shapes -->
   <div class="background-shapes">
     <div class="triangle"></div>
     <div class="rectangle"></div>
   </div>
+ 
+  </div>
+ 
+ 
+  <div id="GameProgressPage">
+   
+    <div class="container question-panel text-center" id="question-panel">    
+      <h1 class="mb-2 mt-2" id="question"></h1>  
+    </div> 
+ 
+    <div class="timer" id="timer">
+      <div class="inner-circle"></div>
+      <span id="timer-number"></span>
+    </div>  
+    
+      <div class="container container-center text-center" id="answerContainer"> 
+      <div class="row w-100">
+        <div class="col-md-6">
+            <div class="answer-panel bg-danger"><i class="fas fa-star fa-2x"></i><span class="answer-text"></span></div>
+        </div>
+        <div class="col-md-6">
+            <div class="answer-panel bg-primary"><i class="fas fa-square fa-2x"></i><span class="answer-text"></span></div>
+        </div>
+        <div class="col-md-6">
+            <div class="answer-panel bg-dark"><i class="fas fa-crown fa-2x"></i><span class="answer-text"></span></div>
+        </div>
+        <div class="col-md-6">
+            <div class="answer-panel bg-success"><i class="fas fa-circle fa-2x"></i><span class="answer-text"></span></div>
+        </div>
+      </div> 
+
+      <div class="background-shapes">
+        <div class="triangle2"></div>
+        <div class="rectangle2"></div>
+      </div> 
+      </div> 
+  </div> 
+  
+    <div class="overlay-panel" id="overlay" style="display: none;"> 
+      <h1 class="pb-5 font-weight-bold display-4">Leaderboard:</h1>
+      <div id="leaderboard-container"> 
+        <div class="player-panel gold">
+          <span class="player-name">1st player: Josip</span>
+          <span class="player-points">1500 points</span>
+        </div>
+        <div class="player-panel silver">
+          <span class="player-name">2nd player: Karlo</span>
+          <span class="player-points">1000 points</span>
+        </div>
+        <div class="player-panel bronze">
+          <span class="player-name">3rd player: Mateo</span>
+          <span class="player-points">500 points</span>
+      </div>
+        <div class="player-panel">
+          <span class="player-name">4th player: Marko</span>
+          <span class="player-points">250 points</span>
+        </div>
+        <div class="player-panel">
+          <span class="player-name">5th player: Borna</span>
+          <span class="player-points">100 points</span>
+        </div>
+      </div> 
+  
+      <button class="btn btn-primary btn-next" id="btnLeaderboard">Continue</button>  
+
+      <div class="background-shapes"> 
+        <div class="triangle"></div> 
+        <div class="rectangle"></div> 
+      </div> 
+  </div>   
+  
+    <div id="finishPage">  
+      <h1 id="user"></h1>  
+      <p id="score"></p> 
+    </div> 
+    
 
   <!-- Optional JavaScript -->
+  <script src="/JS/kahootgamepin.js"></script>
+ 
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script
     src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -179,31 +481,6 @@
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"
   ></script>
-
-  <!-- JavaScript for Adding Player Names -->
-  <script>
-    // Array of player names
-    var players = [
-      "Alice", "Bob", "Charlie", "Dave", "Eve", "Frank", "Grace", "Henry", "Isabel", "Jack",
-      "Kate", "Liam", "Mia", "Nathan", "Olivia", "Peter", "Quinn", "Rachel", "Sam"
-    ];
-
-    // Function to add player names to the list
-    function addPlayerNames() {
-      var playerList = document.getElementById("playerList");
-      var playerCount = document.getElementById("playerCount");
-      playerCount.textContent = "Players: " + players.length;
-
-      players.forEach(function(player) {
-        var playerName = document.createElement("div");
-        playerName.className = "player-name";
-        playerName.textContent = player;
-        playerList.appendChild(playerName);
-      });
-    }
-
-    // Call the function to add player names
-    addPlayerNames();
-  </script>
-</body>
-</html>
+ 
+ </body>
+</html> 

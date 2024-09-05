@@ -1,324 +1,437 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="en"> 
+
+<head> 
     <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-      rel="stylesheet"
-    />
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
     <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="/ResourcesForCSS/Shapes.css" />
-    <title>Arendt Quiz Creator</title>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+ 
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+ 
+    <title>Kahoot Quiz Creator</title>
+ 
     <style>
-      .navbar-nav .nav-link {
-        font-size: 18px; /* Adjust the font size as per your preference */
-      }
-      .question-panel {
-        position: fixed;
-        top: 200px;
-        left: 20px;
-        width: 250px;
-        height: 500px;
-        overflow-y: auto;
-        z-index: -1;
-      }
-
-      .question-panel-main {
-        position: fixed;
-        top: 110px;
-        left: 0px;
-        width: 300px;
-        height: 775px;
-        background-color: #f8f9fa; /* Light gray background */
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Shadow */
-        padding: 20px; /* Add padding to give some space inside */
-      }
-
-      .container .col-md-6 {
-        margin-top: 80px; /* Adjusted top margin */
-        font-size: 35px;
-      }
-      #questionInput {
-        margin-top: 20px; /* Adjusted top margin */
-      }
-      .object-container {
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
-      }
-
-      .quiz-name {
-        margin-bottom: 10px;
-        margin-top: 10px;
-        width: 250px;
-      }
-
-      .quiz-description {
-        margin-top: 550px; /* Adjusted margin-top */
-      }
-
-      .options-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 10px;
-        margin-top: 30px; /* Adjusted margin top */
-      }
-
-      .play-button {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-      }
-
-      body {
-        font-family: "Pacifico", cursive;
-      }
-
-      .option-label {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        border-radius: 5px;
-      }
-
-      .option-input {
-        margin-left: 10px;
-        flex-grow: 1;
-        height: 60px; /* Increase height of options */
-      }
+        .navbar-nav .nav-link {
+            font-size: 18px;
+            /* Adjust the font size as per your preference */
+        }
+        
+        .question-panel {
+            position: fixed;
+            top: 100px; 
+            left: 20px;
+            width: 250px;
+            height: 500px;
+            /* Osigurava visinu panela */
+            overflow-y: auto;
+            /* Omogućava skrolovanje */
+            z-index: 1;
+            /* Povećan z-index da bi panel bio iznad ostalih elemenata */
+        }
+        
+        .question-panel-main {
+            position: fixed;
+            top: 50px;
+            left: 0px;
+            width: 300px;
+            height: 775px;
+            background-color: #f8f9fa;
+            /* Light gray background */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            /* Shadow */
+            padding: 20px;
+            /* Add padding to give some space inside */
+        }
+ 
+        .container .col-md-6 {
+            margin-top: 80px;
+            /* Adjusted top margin */
+            font-size: 35px;
+        }
+ 
+        #questionInput {
+            margin-top: 20px;
+            /* Adjusted top margin */
+        }
+ 
+        .object-container {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+ 
+        .quiz-name {
+            margin-bottom: 10px;
+            margin-top: 10px;
+            width: 250px;
+        }
+ 
+        .quiz-description {
+            margin-top: 550px;
+            /* Adjusted margin-top */
+        }
+ 
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 10px;
+            margin-top: 30px;
+            /* Adjusted margin top */
+        }
+ 
+        body {
+            font-family: "Pacifico", cursive;
+        }
+ 
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+        }
+ 
+        .option-input {
+            margin-left: 10px;
+            flex-grow: 1;
+            height: 60px;
+            /* Increase height of options */
+        }
+ 
+ 
+        .add-new-question-panel {
+            background: #ffffff;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+        }
+ 
+        .object-container {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+ 
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 10px;
+        }
+ 
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .btn { 
+            display: inline-block;
+            padding: 10px 10px; 
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+ 
+        .btn:hover {
+            opacity: 0.8;
+        }
+ 
+        /* Boje za različite tipove dugmadi */
+        .btn-show-question {
+            background-color: #1498a4;
+        }
+ 
+        .btn-play {
+            background-color: #28a745;
+        }
+ 
+        .btn-update {
+            background-color: #ffc107;
+        }
+ 
+        .btn-delete {
+            background-color: #e32813;
+        }
+ 
+        .btn-add-another-question {
+            background-color: greenyellow;
+        }
     </style>
-  </head>
-  <body>
+</head>
+ 
+<body>
     <!-- Top Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="HistoryOfGamesAndCreation.html">Arendt</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="HistoryOfGamesAndCreation.html"
-              >Quiz history</a
-            >
-          </li>
-          <li class="nav-item">
-            <div class="join-quiz-dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="joinQuizDropdown"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                Join a quiz
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-right"
-                aria-labelledby="joinQuizDropdown"
-              >
-                <input
-                  type="text"
-                  class="form-control join-quiz-input"
-                  id="joinQuizInput"
-                  placeholder="Enter quiz code"
-                />
-              </div>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="profileDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="true"
-            >
-              Profile
-            </a>
-            <div
-              class="dropdown-menu dropdown-menu-right"
-              aria-labelledby="profileDropdown"
-            >
-              <span class="dropdown-item-text">User Name</span>
-              <span class="dropdown-item-text">user@example.com</span>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="../AnonymousUser/Login.html"
-                >Log out</a
-              >
-            </div>
-          </li>
-        </ul>
-      </div>
+        <a class="navbar-brand" href="HistoryOfGamesAndCreation.html">Kahoot</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="HistoryOfGamesAndCreation.html">Quiz history</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Profile
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
+                        <span class="dropdown-item-text" id="userNameSpan"></span>
+                        <span class="dropdown-item-text">user@example.com</span>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="../AnonymousUser/Login.html">Log out</a>
+                        <!-- dodaj event listener kasnije -->
+                    </div>
+                </li>
+            </ul>
+        </div>
     </nav>
-
-    <!-- Panel left side -->
-    <div class="question-panel-main">
-      <!-- Quiz Name -->
-      <div class="quiz-name">
-        <input type="text" class="form-control" placeholder="Quiz Name" />
-      </div>
-
-      <!-- Left Panel for Questions -->
-      <div class="question-panel bg-light">
-        <!-- Example Objects -->
-        <div class="object-container">
-          <p>1. Example Question</p>
-          <a href="#" class="btn btn-sm btn-primary">Edit</a>
-          <a href="#" class="btn btn-sm btn-danger">Delete</a>
+    
+    <div class="container mt-2">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+ 
+                <div id="quizPanel">
+                    <h3 id="quizPanelTitle">Your Quizzes</h3>
+                    <div class="quiz-panel bg-light">
+                        <!-- ovo se radi u JS da bude dinamičko -->
+                    </div>
+                    <!-- <ul id="quizList" class="list-group"></ul> -->
+                    <button id="btnCreateNewQuiz" class="btn btn-primary mt-3">Create New Quiz</button>
+                </div>
+ 
+                <!-- kriranje kviza, dodavanje imena kviza i opisa -->
+ 
+                <form id="quizInfoForm">
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label for="title">Quiz name</label>
+                        <input type="text" class="form-control" placeholder="Name" id="title" required>
+                    </div>
+ 
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="quizDescription">Description</label>
+                        <input type="text" class="form-control" placeholder="Description" id="quizDescription" required>
+                    </div>
+ 
+                    <button type="button" class="btn btn-primary float-right" id="btnNext">Next</button>
+                </form>
+ 
+ 
+ 
+                <form id="addQuestionForm" style="display: none;">
+                    <!-- ovo sluzi za dodavanje pitanja u pojedini kviz -->
+                    <ul id="questions">
+                        <li>
+                            <div class="form-group">
+                                <label for="questionText">Question</label>
+                                <input class="form-control" type="text" placeholder="Question text" id="questionText"
+                                    required>
+                            </div>
+                        </li>
+ 
+                        <li>
+                            <div class="form-group">
+                                <label for="questionTime">Question time</label>
+                                <input class="form-control" type="number" placeholder="15-60 sec" id="questionTime"
+                                    required min="15" max="60">
+                            </div>
+                        </li>
+ 
+                        <li>
+                            <div class="form-group">
+                                <label for="questionMaxPoints">Max points for question</label>
+                                <input class="form-control" type="number" placeholder="Max points"
+                                    id="questionMaxPoints" required min="1" max="10">
+                            </div>
+                        </li>
+ 
+                        <ul>
+                            <li>
+                                <label for="answer1">
+                                    <input class="form-control" type="text" placeholder="Answer 1" id="answer1"
+                                        required>
+                                    <input type="checkbox" id="chbxAnswer1">
+                                </label>
+                            </li>
+                            <li>
+                                <label for="answer2">
+                                    <input class="form-control" type="text" placeholder="Answer 2" id="answer2"
+                                        required>
+                                    <input type="checkbox" id="chbxAnswer2">
+                                </label>
+                            </li>
+                            <li>
+                                <label for="answer3">
+                                    <input class="form-control" type="text" placeholder="Answer 3" id="answer3"
+                                        required>
+                                    <input type="checkbox" id="chbxAnswer3">
+                                </label>
+                            </li>
+                            <li>
+                                <label for="answer4">
+                                    <input class="form-control" type="text" placeholder="Answer 4" id="answer4"
+                                        required>
+                                    <input type="checkbox" id="chbxAnswer4">
+                                </label>
+                            </li>
+ 
+                            <!-- Dodajte ostale odgovore -->
+                        </ul>
+                    </ul>
+ 
+                    <button id="btnAddAnotherQuestion" class="btn btn-add-another-question">Add Another
+                        Question</button>
+ 
+ 
+                    <button type="submit" class="btn btn-primary float-right" id="btnSave">Save Quiz</button>
+                </form>
+ 
+                <form id="editQuestionForm" style="display: none;">
+                    <!-- ovo sluzi za dodavanje pitanja u pojedini kviz -->
+                    <ul id="editQuestions">
+                        <li>
+                            <div class="form-group">
+                                <label for="editQuestionText">Question</label>
+                                <input class="form-control" type="text" placeholder="Question text" id="editQuestionText"
+                                    required>
+                            </div>
+                        </li>
+ 
+                        <li>
+                            <div class="form-group">
+                                <label for="editQuestionTime">Question time</label>
+                                <input class="form-control" type="number" placeholder="15-60 sec" id="editQuestionTime"
+                                    required min="15" max="60">
+                            </div>
+                        </li>
+ 
+                        <li>
+                            <div class="form-group">
+                                <label for="editQuestionMaxPoints">Max points for question</label>
+                                <input class="form-control" type="number" placeholder="Max points"
+                                    id="editQuestionMaxPoints" required min="1" max="10">
+                            </div>
+                        </li>
+ 
+                        <ul>
+                            <li>
+                                <label for="editAnswer1">
+                                    <input class="form-control" type="text" placeholder="Answer 1" id="answer1"
+                                        required>
+                                    <input type="checkbox" id="editChbxAnswer1">
+                                </label>
+                            </li>
+                            <li>
+                                <label for="editAnswer2">
+                                    <input class="form-control" type="text" placeholder="Answer 2" id="answer2"
+                                        required>
+                                    <input type="checkbox" id="editChbxAnswer2">
+                                </label>
+                            </li>
+                            <li>
+                                <label for="editAnswer3">
+                                    <input class="form-control" type="text" placeholder="Answer 3" id="answer3"
+                                        required>
+                                    <input type="checkbox" id="editChbxAnswer3">
+                                </label>
+                            </li>
+                            <li>
+                                <label for="editAnswer4">
+                                    <input class="form-control" type="text" placeholder="Answer 4" id="answer4"
+                                        required>
+                                    <input type="checkbox" id="editChbxAnswer4">
+                                </label>
+                            </li>
+ 
+                            <!-- Dodajte ostale odgovore -->
+                        </ul>
+                    </ul>
+ 
+                   
+ 
+                    <button type="submit" class="btn btn-primary float-right" id="btnSaveChanges">Save Changhes</button>
+                </form>
+ 
+ 
+ 
+            </div>
         </div>
-        <div class="object-container">
-          <p>2. Example Question</p>
-          <a href="#" class="btn btn-sm btn-primary">Edit</a>
-          <a href="#" class="btn btn-sm btn-danger">Delete</a>
-        </div>
-        <div class="object-container">
-          <p>3. Example Question</p>
-          <a href="#" class="btn btn-sm btn-primary">Edit</a>
-          <a href="#" class="btn btn-sm btn-danger">Delete</a>
-        </div>
-        <div class="object-container">
-          <p>4. Example Question</p>
-          <a href="#" class="btn btn-sm btn-primary">Edit</a>
-          <a href="#" class="btn btn-sm btn-danger">Delete</a>
-        </div>
-        <div class="object-container">
-          <p>5. Example Question</p>
-          <a href="#" class="btn btn-sm btn-primary">Edit</a>
-          <a href="#" class="btn btn-sm btn-danger">Delete</a>
-        </div>
-        <div class="object-container">
-          <p>6. Example Question</p>
-          <a href="#" class="btn btn-sm btn-primary">Edit</a>
-          <a href="#" class="btn btn-sm btn-danger">Delete</a>
-        </div>
-        <div class="object-container">
-          <p>7. Example Question</p>
-          <a href="#" class="btn btn-sm btn-primary">Edit</a>
-          <a href="#" class="btn btn-sm btn-danger">Delete</a>
-        </div>
-      </div>
-
-      <!-- Quiz Description -->
-      <div class="quiz-description">
-        <label for="quizDescription">Quiz Description</label>
-        <textarea
-          class="form-control"
-          id="quizDescription"
-          rows="3"
-          placeholder="Enter quiz description"
-        ></textarea>
-      </div>
     </div>
-
-    <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <!-- Question Text Box -->
-          <div class="form-group">
-            <label for="questionInput">Question: </label>
-            <textarea
-              class="form-control"
-              id="questionInput"
-              rows="3"
-            ></textarea>
-          </div>
-
-          <!-- Inputs for Options with Color-coded Buttons -->
-          <div class="options-container">
-            <label class="option-label bg-danger text-white">
-              <input type="radio" name="options" value="1" />
-              <textarea
-                class="form-control option-input"
-                rows="3"
-                placeholder="Option 1"
-              ></textarea>
-            </label>
-            <label class="option-label bg-info text-white">
-              <input type="radio" name="options" value="2" />
-              <textarea
-                class="form-control option-input"
-                rows="3"
-                placeholder="Option 2"
-              ></textarea>
-            </label>
-            <label class="option-label bg-dark text-white">
-              <input type="radio" name="options" value="3" />
-              <textarea
-                class="form-control option-input"
-                rows="3"
-                placeholder="Option 3"
-              ></textarea>
-            </label>
-            <label class="option-label bg-success text-white">
-              <input type="radio" name="options" value="4" />
-              <textarea
-                class="form-control option-input"
-                rows="3"
-                placeholder="Option 4"
-              ></textarea>
-            </label>
-          </div>
-
-          <!-- Save Quiz Button -->
-          <button type="button" class="btn btn-primary float-right">
-            Save Quiz
-          </button>
-
-          <!-- Add Question Button -->
-          <button type="button" class="btn btn-success">Add Question</button>
-        </div>
-      </div>
+ 
+ 
+ 
+ 
+    <div class="question-panel">
+        <!-- dinamicki se popunjava -->
     </div>
-    <!-- Background shapes -->
-    <div class="background-shapes">
-      <div class="triangle"></div>
-      <div class="rectangle"></div>
+ 
+ 
     </div>
-    <!-- Play Quiz Button -->
-    <button type="button" class="btn btn-primary play-button">Play Quiz</button>
-
+ 
+ 
+ 
+ 
+ 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
-      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-      crossorigin="anonymous"
-    ></script>
-  </body>
-</html>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+ 
+    <script src="/JS/createarendtquiz.js"></script>
+ 
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Get references to the elements
+            const quizInfoForm = document.getElementById('quizInfoForm');
+            const addQuestionForm = document.getElementById('addQuestionForm');
+            const btnCreateNewQuiz = document.getElementById('btnCreateNewQuiz');
+            const btnNext = document.getElementById('btnNext');
+ 
+            // Initially hide the quiz info form and add question form
+            quizInfoForm.style.display = 'none';
+            addQuestionForm.style.display = 'none';
+ 
+            // Show quiz info form when "Create New Quiz" button is clicked
+            btnCreateNewQuiz.addEventListener('click', () => {
+                quizInfoForm.style.display = 'block';
+                btnCreateNewQuiz.style.display = 'none'; // Hide the button after creating new quiz
+                quizPanelTitle.style.display = 'none';
+            });
+ 
+            // Show add question form when "Next" button is clicked
+            btnNext.addEventListener('click', () => {
+                quizInfoForm.style.display = 'none';
+                addQuestionForm.style.display = 'block';
+            });
+ 
+            // Optionally handle "Add Another Question" button click here
+            // Add functionality if needed 
+            
+            const userNameSpan = document.getElementById('userNameSpan'); 
+            const Username = localStorage.getItem('username') 
+            userNameSpan.textContent = `${Username}`; 
+        }); 
+    </script>
+ 
+</body>
+ 
+</html> 
