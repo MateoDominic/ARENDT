@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <!-- Required meta tags -->
@@ -8,8 +8,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     
-    <!-- External CSS for custom shapes (not shown) -->
-    <link rel="stylesheet"  href="/ResourcesForCSS/Shapes.css"/>
+    <!-- External CSS for custom shapes (not shown) --> 
+    <link rel="stylesheet"  href="../ResourcesForCSS/Shapes.css"/> 
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -23,12 +23,17 @@
             font-family: 'Pacifico', cursive; /* Apply fancy font to the entire document */
         }
         .container {
-            display: flex;
+            display: block; 
             justify-content: center; /* Center align horizontally */
             align-items: center; /* Center align vertically */
             height: 100%; /* Full height */
             transform: translateY(-50px); /* Move up by 50px */
         }
+
+        #quizForm { 
+            padding-top: 200px;  
+        } 
+
         .form-group label {
             font-size: 1.5rem; /* Larger font size */
             display: block; /* Make labels block elements for easier styling */
@@ -48,64 +53,354 @@
         .visible {
             opacity: 1;
             top: 0; /* Slide up to its final position */
-        }
+        } 
+
+        #overlay { 
+            display: none; 
+        } 
+
+        
+    #GameProgressPage {
+      display: none;
+    }
+ 
+    .timer {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(green 0% 360deg, transparent 360deg 360deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      z-index: 10;
+      overflow: hidden;
+      box-shadow: 0 0 0 5px white;
+    }
+ 
+    .timer .inner-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+ 
+    .timer span {
+      position: relative;
+      z-index: 2;
+    }
+ 
+ 
+    .container-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      top: -10px;
+      height: 60vh;  
+      position: relative;
+    }
+ 
+    .question-panel {
+      background-color: #f0f0f0;
+      padding: 10px; 
+      border-radius: 10px; 
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    } 
+    
+    .answer-panel { 
+      height: 150px;   
+      width: 450px;    
+      font-size: 20px;  
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+      padding-left: 10px;
+      padding-right: 10px;
+      color: white;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);  
+    }
+ 
+    .answer-panel i {
+      margin-right: 10px;
+    }
+ 
+    .overlay-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgb(80, 0, 228);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      color: white;
+      font-size: 2rem;
+    }
+ 
+    .player-panel {
+      width: 60%;
+      background-color: #343a40;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Added shadow to player panel */
+    }
+ 
+    .player-panel.gold::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #ffd700;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+ 
+    .player-panel.silver::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #c0c0c0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+ 
+    .player-panel.bronze::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background-color: #cd7f32;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+ 
+    .player-name {
+      font-weight: bold;
+    }
+ 
+    .player-points {
+      color: white;
+    }
+ 
+    .background-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+ 
+    .triangle {
+      position: absolute;
+      top: 35%;
+      left: 5%;
+      border-left: 25vw solid transparent;
+      border-right: 25vw solid transparent;
+      border-bottom: 50vh solid #867c9473;
+      transform: rotate(20deg);
+    }
+ 
+    .rectangle {
+      position: absolute;
+      bottom: 60%;
+      right: 10%;
+      width: 40%;
+      height: 40%;
+      background-color: #867c9473;
+      transform: rotate(10deg);
+    }
+    
+    #GameProgressPage { 
+      padding-top: 80px;  
+    } 
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f8f9fa;
+        padding: 10px 0;
+        border-top: 1px solid #dee2e6;
+        display: none; 
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 15px;
+        padding-right: 15px;
+      } 
+
+      .bottom-nav .navbar-text {
+        text-align: center;
+      }
+
+      .bottom-nav .navbar-text.points {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #333; /* Darker color */
+      }
+    
+      #answerContainer { 
+        padding-top: 100px;  
+      } 
+    
+      .loading-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: purple; 
+      color: #fff; 
+      text-align: center;
+      display: none; 
+      align-items: center;
+      justify-content: center;
+      z-index: 9999; 
+    } 
+    
     </style>
 
-    <title>Arendt</title>
-</head>
-<body>
-    <!-- Main content container -->
-    <div class="container">
-        <div class="row w-100">
-            <div class="col-md-6 offset-md-3">
-                <!-- Form for entering quiz code and additional info -->
-                <form id="quizForm">
-                    <!-- Quiz Code input field -->
-                    <div class="form-group">
+    <title>Arendt</title> 
+</head> 
+<body> 
+    
+    <div class="container row w-100 col-md-6 offset-md-3" id="mainPage">  
+      <form id="quizForm"> 
+                    <div class="form-group"> 
                         <label for="quizCode">Quiz Code</label>
-                        <input type="text" class="form-control" id="quizCode" placeholder="Enter quiz code" required>
-                    </div>
-                    <!-- Hidden content revealed after submitting quiz code -->
-                    <div id="hiddenContent" class="hidden-on-load">
+                        <input type="text" class="form-control" id="quizCode" placeholder="Enter quiz code" required> 
+                    </div> 
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" placeholder="Enter your name">
                         </div>
-                        <!-- Button to join the quiz -->
-                        <button type="submit" class="btn btn-primary">Join Quiz</button>
-                    </div>
-                </form>
-            </div>
+                        <button type="submit" class="btn btn-primary" id="btnJoin">Join Quiz</button>
+                    <div> 
+                        <p>Imaš račun? <a href="../AnonymousUser/Login.html">Logiraj se</a></p>
+                    </div>            
+                </form> 
+        <div class="background-shapes"> 
+            <div class="triangle"></div> 
+            <div class="rectangle"></div> 
+        </div> 
+    </div> 
+    
+    <div id="GameProgressPage">
+   
+    <div class="container question-panel text-center" id="question-panel">    
+      <h1 class="mb-2 mt-2" id="question"></h1>  
+    </div> 
+ 
+    <div class="timer" id="timer">
+      <div class="inner-circle"></div>
+      <span id="timer-number"></span>
+    </div>  
+    
+      <div class="container container-center text-center" id="answerContainer"> 
+      <div class="row w-100">
+        <div class="col-md-6">
+            <button class="answer-panel bg-danger"><i class="fas fa-star fa-2x"></i><span class="answer-text"></span></button> 
+        </div> 
+        <div class="col-md-6">
+            <button class="answer-panel bg-primary"><i class="fas fa-square fa-2x"></i><span class="answer-text"></span></button> 
+        </div> 
+        <div class="col-md-6">
+            <button class="answer-panel bg-dark"><i class="fas fa-crown fa-2x"></i><span class="answer-text"></span></button> 
+        </div> 
+        <div class="col-md-6">
+            <button class="answer-panel bg-success"><i class="fas fa-circle fa-2x"></i><span class="answer-text"></span></button> 
         </div>
-    </div>
+      </div> 
+      
+      <div class="background-shapes">
+        <div class="triangle2"></div>
+        <div class="rectangle2"></div>
+      </div>
 
-    <!-- Background shapes (not shown) -->
-    <div class="background-shapes">
-        <div class="triangle"></div>
-        <div class="rectangle"></div>
-    </div>
+      </div>
+  </div>
 
+  <div id="loadingPage" class="loading-page">
+    <div> 
+      <h1>Your answer was submitted</h1> 
+    </div>
+  </div> 
+
+  <nav class="navbar navbar-light bg-light bottom-nav">
+    <span id="userName" class="navbar-text" style="color: #333; font-weight: bold;"></span>
+    <span id="userPoints" class="navbar-text points" style="color: #333; font-weight: bold;"></span> 
+  </nav> 
+  
+    <div class="overlay-panel" id="overlay" style="display: none;"> 
+        <h1 class="pb-5 font-weight-bold display-4">Leaderboard:</h1>
+        <div id="leaderboard-container"> 
+          <div class="player-panel gold">
+            <span class="player-name">1st player: Josip</span>
+            <span class="player-points">1500 points</span>
+          </div>
+          <div class="player-panel silver">
+            <span class="player-name">2nd player: Karlo</span>
+            <span class="player-points">1000 points</span>
+          </div>
+          <div class="player-panel bronze">
+            <span class="player-name"></span>
+            <span class="player-points"></span>
+        </div>
+          <div class="player-panel">
+            <span class="player-name"></span>
+            <span class="player-points"></span>
+          </div>
+          <div class="player-panel">
+            <span class="player-name"></span>
+            <span class="player-points"></span>
+          </div>
+        </div> 
+        <div class="background-shapes"> 
+          <div class="triangle"></div> 
+          <div class="rectangle"></div> 
+        </div> 
+    </div>   
+    
+    <div id="finishGame"> 
+      <h1 id="user"></h1>  
+      <p id="score"></p> 
+    </div> 
+    
     <!-- Optional JavaScript -->
+    <script src="/JS/index.js"></script>
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-    <!-- Custom JavaScript to handle form submission and animations -->
-    <script>
-        $(document).ready(function() {
-            $('#quizForm').on('submit', function(event) {
-                event.preventDefault(); // Prevent form submission
-
-                // Calculate the height of the quiz code input
-                var quizCodeHeight = $('#quizCode').outerHeight(true);
-
-                // Show hidden content with animation
-                $('#hiddenContent')
-                    .css({ 'top': quizCodeHeight + 'px' })
-                    .addClass('visible');
-            });
-        });
-    </script>
 </body>
 </html>

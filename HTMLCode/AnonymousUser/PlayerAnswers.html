@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -42,9 +42,9 @@
         width: 100%;
       }
 
-      .btn-answer {
-        height: 375px;
-        width: 825px;
+      .btn-answer { 
+        height: 260px; 
+        width: 600px;
         font-size: 2.5rem;
         display: flex;
         align-items: center;
@@ -60,129 +60,6 @@
         height: 100%;
         background-color: rgba(255, 255, 255, 0.8);
         z-index: 10;
-      }
-
-
-      @media (max-width: 1800px) {
-
-      .answer-buttons {
-        top: 70px;
-        height: 77vh;
-      }
-      .btn-answer {
-        height: 375px;
-        width: 775px;
-        font-size: 2rem;
-        margin: 0 5px 10px;
-      }
-      }
-
-      @media (max-width: 1600px) {
-
-        .answer-buttons {
-          top: 130px;
-          height: 65vh;
-        }
-        .btn-answer {
-          height: 300px;
-          width: 660px;
-          font-size: 2rem;
-          margin: 0 5px 10px;
-        }
-      }
-
-      @media (max-width: 1400px) {
-        .answer-buttons {
-          top: 140px;
-          height: 63vh;
-        }
-        .btn-answer {
-          height: 300px;
-          width: 575px;
-          font-size: 2rem;
-          margin: 0 5px 10px;
-        }
-      }
-
-      @media (max-width: 1200px) {
-        .answer-buttons {
-          top: 150px;
-          height: 59vh;
-        }
-        .btn-answer {
-          height: 275px;
-          width: 475px;
-          font-size: 2rem;
-          margin: 0 5px 10px;
-        }
-      }
-
-      @media (max-width: 1000px) {
-        .answer-buttons {
-          top: 160px;
-          height: 58vh;
-        }
-        .btn-answer {
-          height: 275px;
-          width: 375px;
-          font-size: 2rem;
-          margin: 0 5px 10px;
-        }
-      }
-
-      @media (max-width: 800px) {
-        .answer-buttons {
-          top: 140px;
-          height: 65vh;
-        }
-        .btn-answer {
-          height: 300px;
-          width: 275px;
-          font-size: 2rem;
-          margin: 0 5px 10px;
-        }
-      }
-
-      @media (max-width: 600px) {
-        .answer-buttons {
-          top: 140px;
-          height: 64vh;
-        }
-        .btn-answer {
-          height: 300px;
-          width: 230px;
-          font-size: 2rem;
-          margin: 0 5px 10px;
-        }
-      }
-
-      @media (max-width: 500px) {
-        .answer-buttons {
-          top: 125px;
-          height: 61vh;
-        }
-
-        .btn-answer {
-          margin: 0 5px 5px;
-          height: 300px;
-          width: 190px;
-          font-size: 1rem;
-        }
-      }
-
-
-      @media (max-width: 400px) {
-        .answer-buttons {
-          top: 100px;
-          height: 55vh;
-        }
-
-        .btn-answer {
-          margin: 0 5px 8px;
-          height: 250px;
-          width: 150px;
-          font-size: 1rem;
-        }
       }
 
       /* Additional style for bottom navigation */
@@ -234,51 +111,85 @@
         </ul>
       </div>
     </nav>
-  
-    <div class="overlay" id="overlay"></div>
-    <div class="answer-buttons mt-5">
-      <div class="d-flex">
-        <button class="btn btn-danger btn-answer" onclick="showSpinner()">
-          <i class="fas fa-star fa-3x"></i>
-        </button>
+    
+    <div id="GameProgressPage">
+ 
+      <div class="container question-panel text-center" id="question-panel">
+          <h1 class="mb-2 mt-2" id="question"></h1>
       </div>
-      <div class="d-flex">
-        <button class="btn btn-primary btn-answer" onclick="showSpinner()">
-          <i class="fas fa-square fa-3x"></i>
-        </button>
+
+      <div class="container container-center text-center" id="answerContainer">
+          <div class="timer" id="timer">
+              <div class="inner-circle"></div>
+              <span id="timer-number"></span>
+          </div>
+
+          <div class="row w-100">
+
+
+              <div class="col-md-6">
+
+                  <button class="btn btn-danger btn-answer" data-answer="star">
+                      <div class="answer-panel bg-danger"><i class="fas fa-star fa-2x"></i><span
+                              class="answer-text"></span></div>
+                  </button>
+              </div>
+
+
+              <div class="col-md-6">
+                  <button class="btn btn-primary btn-answer" data-answer="square">
+                      <div class="answer-panel bg-primary"><i class="fas fa-square fa-2x"></i><span
+                              class="answer-text"></span></div>
+                  </button>
+              </div>
+
+
+              <div class="col-md-6">
+                  <button class="btn btn-dark btn-answer" data-answer="crown">
+                      <div class="answer-panel bg-dark"><i class="fas fa-crown fa-2x"></i><span
+                              class="answer-text"></span></div>
+                  </button>
+              </div>
+
+
+              <div class="col-md-6">
+                  <button class="btn btn-success btn-answer" data-answer="circle">
+                      <div class="answer-panel bg-success"><i class="fas fa-circle fa-2x"></i><span
+                              class="answer-text"></span></div>
+                  </button>
+              </div>
+          </div>
+
+          <div class="background-shapes">
+              <div class="triangle2"></div>
+              <div class="rectangle2"></div>
+          </div>
+
       </div>
-      <div class="d-flex">
-        <button class="btn btn-dark btn-answer" onclick="showSpinner()">
-          <i class="fas fa-crown fa-3x"></i>
-        </button>
-      </div>
-      <div class="d-flex">
-        <button class="btn btn-success btn-answer" onclick="showSpinner()">
-          <i class="fas fa-circle fa-3x"></i>
-        </button>
-      </div>
-    </div>
-  
+  </div> 
+    
     <!-- Spinner -->
      <div class = "spinner-container" id = "spinner">
-    <div class="spinner-border" style="width: 3rem; height: 3rem;">
-      <div class="spinner-border text-primary" role="status">
-        <span class="sr-only">Loading...</span>
+      <div class="spinner-border" style="width: 3rem; height: 3rem;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
       </div>
     </div>
-  </div>
-  
-    <!-- Bottom Navigation Bar -->
-    <nav class="navbar navbar-light bg-light bottom-nav">
-      <span class="navbar-text" style="color: #333; font-weight: bold;">Mateo</span>
-      <span class="navbar-text points" style="color: #333; font-weight: bold;">Points: 1000</span>
-    </nav>
-  
-    <!-- Background shapes -->
-    <div class="background-shapes">
-      <div class="triangle"></div>
-      <div class="rectangle"></div>
-    </div>
+    
+      <!-- Bottom Navigation Bar -->
+      <nav class="navbar navbar-light bg-light bottom-nav">
+        <span class="navbar-text" style="color: #333; font-weight: bold;">Mateo</span>
+        <span class="navbar-text points" style="color: #333; font-weight: bold;">Points: 1000</span>
+      </nav>
+    
+      <!-- Background shapes -->
+      <div class="background-shapes">
+        <div class="triangle"></div>
+        <div class="rectangle"></div>
+      </div>
+    
+    </div> 
   
     <!-- jQuery, Popper.js, Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -291,12 +202,12 @@
         document.querySelector('.answer-buttons').style.display = 'none';
         // Show spinner
         document.getElementById('spinner').style.display = 'block';
-      }
+      } 
     </script>
 
     <!-- Hide overlay initially -->
     <script>
-      document.getElementById("overlay").style.display = "none";
+      document.getElementById("overlay").style.display = "none"; 
     </script>
   </body>
 </html>
